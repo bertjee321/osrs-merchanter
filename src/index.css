@@ -1,0 +1,42 @@
+th:hover {
+  align-self: center;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.filter-span {
+  font-size: 15px;
+  text-decoration: underline;
+}
+.filter-span:hover {
+  cursor: pointer;
+  color: blue;
+}
+
+.refresh-icon {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.refresh-icon:hover {
+  cursor: pointer;
+}
+
+.refresh-icon .refresh-tooltiptext {
+  top: -32.5px;
+  left: 105%;
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+.refresh-icon:hover .refresh-tooltiptext {
+  visibility: visible;
+}
