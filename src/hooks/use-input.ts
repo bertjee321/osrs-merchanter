@@ -1,17 +1,13 @@
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 
-/////////////////////////////////
-////// TO DO: DEFINE TYPES //////
-/////////////////////////////////
-
-const useInput = (validateValue: any) => {
+const useInput = (validateValue: (args: any) => boolean) => {
   const [enteredValue, setEnteredValue] = useState("");
   const [isTouched, setIsTouched] = useState(false);
 
   const valueIsValid = validateValue(enteredValue);
   const hasError = !valueIsValid && isTouched;
 
-  const valueChangeHandler = (e: any) => {
+  const valueChangeHandler = (e: { target: { value: SetStateAction<string>; }; }) => {
     setEnteredValue(e.target.value);
   };
 
@@ -20,7 +16,7 @@ const useInput = (validateValue: any) => {
     setIsTouched(false);
   };
 
-  const inputBlurHandler = (e: any) => {
+  const inputBlurHandler = (_e: any) => {
     setIsTouched(true);
   };
 
