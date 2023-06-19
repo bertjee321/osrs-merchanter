@@ -5,7 +5,6 @@ import { PriceTableHeader } from "./PriceTableHeader";
 import { Filter } from "./models/price-table.models";
 import { Sort } from "./models/price-table.enums";
 
-
 // set table headers
 const tableHeaders = {
   id: "ID",

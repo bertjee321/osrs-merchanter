@@ -7,7 +7,9 @@ const useInput = (validateValue: (args: any) => boolean) => {
   const valueIsValid = validateValue(enteredValue);
   const hasError = !valueIsValid && isTouched;
 
-  const valueChangeHandler = (e: { target: { value: SetStateAction<string>; }; }) => {
+  const valueChangeHandler = (e: {
+    target: { value: SetStateAction<string> };
+  }) => {
     setEnteredValue(e.target.value);
   };
 
