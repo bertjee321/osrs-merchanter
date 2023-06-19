@@ -84,7 +84,7 @@ function App() {
       tempArray.push(updatedCombinedData);
     });
 
-    setFullList(tempArray);
+    setFullList(filterList(tempArray));
     setIsLoading(false);
   };
 
@@ -113,6 +113,17 @@ function App() {
     const potential = limit ? margin * limit : 0;
 
     return { ...combinedData, margin, potential };
+  };
+
+  // Currently filtering items out of list that do not have an avg. low/high price or volume in the past hour
+  const filterList = (data: PriceDataMapping[]) => {
+    return data.filter(
+      (item) =>
+        !isNullUndefinedEmptyStringOrZero(item.avgLowPrice) &&
+        !isNullUndefinedEmptyStringOrZero(item.avgHighPrice) &&
+        !isNullUndefinedEmptyStringOrZero(item.highPriceVolume) &&
+        !isNullUndefinedEmptyStringOrZero(item.lowPriceVolume)
+    );
   };
 
   const onRefresh = () => {
