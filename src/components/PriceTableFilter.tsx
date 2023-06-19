@@ -1,4 +1,3 @@
-import { FormEventHandler } from "react";
 import useInput from "../hooks/use-input";
 
 export const PriceTableFilter = (props: {
