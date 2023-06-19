@@ -1,7 +1,7 @@
 # The Grand Exchanger - OSRS Trading Tool
 Simple web app tool for one of my favorite games of all time: Old School RuneScape.
 
-This tool is useful for getting hourly data from the Grand Exchange. It lists all items, purchase and sale prices, margin and volume.
+This tool is useful for getting hourly data from the Grand Exchange. It lists all items, buy and sell prices, margin and volume.
 Through the UI filter, you can quickly and easily find potential lucrative trades in Old School RuneScape. 
 
 ## How to use for now:
