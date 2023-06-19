@@ -1,4 +1,4 @@
-import { Mapping, TradeDataList } from "../models/app-models";
+import { Mapping, TradeDataList } from "../models/app.models";
 
 export const transformMappedData = (mappingData: Mapping[]) => {
   const loadedMapping: Mapping[] = [];
