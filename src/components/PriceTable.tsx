@@ -1,20 +1,10 @@
 import { useState } from "react";
 import { LoadingGrid } from "../UI/LoadingGrid";
-import { PriceTableFilter } from "./PriceTableFilter";
+import { PriceTableTimer } from "./PriceTableTimer";
+import { PriceTableHeader } from "./PriceTableHeader";
+import { Filter } from "./models/price-table.models";
+import { Sort } from "./models/price-table.enums";
 
-enum Sort {
-  Ascending = "ascending",
-  Descending = "descending",
-  None = "none",
-}
-
-interface Filter {
-  name?: string;
-  minBuyPrice?: number;
-  maxBuyPrice?: number;
-  minVolume?: number;
-  minMargin?: number;
-}
 
 // set table headers
 const tableHeaders = {
@@ -55,7 +45,6 @@ export const PriceTable = (props: {
     [key: string]: Sort;
   }>(initialSortState);
   const [filter, setFilter] = useState<Filter>(initialFilterState);
-  const [showFilter, setShowFilter] = useState(false);
 
   const filteredItems = [...props.data].filter((item) => {
     if (filter.name) {
@@ -185,10 +174,6 @@ export const PriceTable = (props: {
     });
   };
 
-  const toggleFilter = () => {
-    setShowFilter((prevState) => !prevState);
-  };
-
   const submitHandler = (data: any) => {
     setFilter(data);
   };
@@ -199,33 +184,8 @@ export const PriceTable = (props: {
 
   return (
     <>
-      <h2 className="text-start">
-        Filter{" "}
-        <span
-          style={{ fontSize: "15px" }}
-          className="filter-span"
-          onClick={toggleFilter}
-        >
-          {showFilter ? "hide" : "show"}
-        </span>
-      </h2>
-
-      {showFilter && (
-        <div>
-          <PriceTableFilter filterSubmitHandler={submitHandler} />
-        </div>
-      )}
-      <div className="d-flex flex-row-reverse">
-        <p>
-          <span
-            className="bi bi-arrow-repeat refresh-icon"
-            onClick={refreshHandler}
-          >
-            <span className="refresh-tooltiptext">Refresh now</span>
-          </span>{" "}
-          {props.time}
-        </p>
-      </div>
+      <PriceTableHeader onSubmit={submitHandler} />
+      <PriceTableTimer onRefresh={refreshHandler} timeInSeconds={props.time} />
       <table className="table table-striped table-bordered table-hover text-center">
         <thead className="table-dark">
           <tr>
