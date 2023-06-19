@@ -5,30 +5,8 @@ import {
   isNullUndefinedEmptyStringOrZero,
 } from "./utils/utils";
 import { PriceTable } from "./components/PriceTable";
-
-interface TradeDataList {
-  id?: number;
-  avgHighPrice?: number;
-  highPriceVolume?: number;
-  avgLowPrice?: number;
-  lowPriceVolume?: number;
-  margin?: number;
-  potential?: number;
-}
-
-interface Mapping {
-  examine: string;
-  highalch: number;
-  icon: string;
-  id?: number;
-  limit: number;
-  lowalch: number;
-  members: boolean;
-  name: string;
-  value: number;
-}
-
-interface PriceDataMapping extends Mapping, TradeDataList {}
+import { Mapping, PriceDataMapping, TradeDataList } from "./models/app-models";
+import { transformHourPricesData, transformMappedData } from "./utils/api";
 
 function App() {
   const { sendRequest: fetchMappingData } = useHttp();
@@ -42,43 +20,26 @@ function App() {
 
   const loadData = () => {
     setIsLoading(true);
-    const transformMappedData = (mappingData: Mapping[]) => {
-      const loadedMapping: Mapping[] = [];
-
-      for (const key in mappingData) {
-        loadedMapping.push({ ...mappingData[key] });
-      }
-
-      setMappedItems(loadedMapping);
+    const getTransformedMapping = (mappingData: Mapping[]) => {
+      setMappedItems(transformMappedData(mappingData));
     };
-
-    const transformHourPricesData = (hourPricesData: {
+    const getTransformedHourPricesData = (hourPricesData: {
       data: TradeDataList[];
     }) => {
-      const loadedHourPrices: TradeDataList[] = [];
-
-      for (const key in hourPricesData.data) {
-        loadedHourPrices.push({
-          id: Number(key),
-          ...hourPricesData.data[key],
-        });
-      }
-
-      setHourPricesList(loadedHourPrices);
+      setHourPricesList(transformHourPricesData(hourPricesData));
     };
 
     fetchMappingData(
       {
         url: "https://prices.runescape.wiki/api/v1/osrs/mapping",
       },
-      transformMappedData
+      getTransformedMapping
     );
-
     fetchHourPrices(
       {
         url: "https://prices.runescape.wiki/api/v1/osrs/1h",
       },
-      transformHourPricesData
+      getTransformedHourPricesData
     );
   };
 
@@ -105,12 +66,6 @@ function App() {
   }, [mappedItems, hourPricesList]);
 
   useEffect(() => {
-    if (mappedItems.length > 0 && hourPricesList.length > 0) {
-      combineLists();
-    }
-  }, [mappedItems, hourPricesList]);
-
-  useEffect(() => {
     if (remainingTime === 0) {
       // Time has reached 0, perform the desired action
       // For example, reload data or call a function
@@ -129,7 +84,7 @@ function App() {
       tempArray.push(updatedCombinedData);
     });
 
-    setFullList(filterList(tempArray));
+    setFullList(tempArray);
     setIsLoading(false);
   };
 
@@ -160,16 +115,6 @@ function App() {
     return { ...combinedData, margin, potential };
   };
 
-  const filterList = (data: PriceDataMapping[]) => {
-    return data.filter(
-      (item) =>
-        !isNullUndefinedEmptyStringOrZero(item.avgLowPrice) &&
-        !isNullUndefinedEmptyStringOrZero(item.avgHighPrice) &&
-        !isNullUndefinedEmptyStringOrZero(item.highPriceVolume) &&
-        !isNullUndefinedEmptyStringOrZero(item.lowPriceVolume)
-    );
-  };
-
   const onRefresh = () => {
     loadData();
     setRemainingTime(60);
@@ -177,7 +122,12 @@ function App() {
 
   return (
     <div className="container text-center">
-      <PriceTable data={fullList} loading={isLoading} time={remainingTime} refresh={onRefresh} />
+      <PriceTable
+        data={fullList}
+        loading={isLoading}
+        time={remainingTime}
+        refresh={onRefresh}
+      />
     </div>
   );
 }
