@@ -5,7 +5,7 @@ import {
   isNullUndefinedEmptyStringOrZero,
 } from "./utils/utils";
 import { PriceTable } from "./components/PriceTable";
-import { Mapping, PriceDataMapping, TradeDataList } from "./models/app-models";
+import { Mapping, PriceDataMapping, TradeDataList } from "./models/app.models";
 import { transformHourPricesData, transformMappedData } from "./utils/api";
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
   const [mappedItems, setMappedItems] = useState<Mapping[]>([]);
   const [fullList, setFullList] = useState<PriceDataMapping[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(60); // Countdown timer
+  const [remainingTime, setRemainingTime] = useState(300); // Countdown timer 5 min
 
   const loadData = () => {
     setIsLoading(true);
@@ -47,7 +47,7 @@ function App() {
     // Load data initially
     loadData();
 
-    // Set up interval to load data every 60 seconds
+    // Set up interval to load data every 300 seconds
     const intervalId = setInterval(() => {
       setRemainingTime((prevTime) => prevTime - 1);
     }, 1000);
@@ -55,7 +55,7 @@ function App() {
     // Clean up the interval and reset the timer when the component unmounts
     return () => {
       clearInterval(intervalId);
-      setRemainingTime(60);
+      setRemainingTime(300);
     };
   }, []);
 
@@ -70,7 +70,7 @@ function App() {
       // Time has reached 0, perform the desired action
       // For example, reload data or call a function
       loadData();
-      setRemainingTime(60); // Reset the timer to 60 seconds
+      setRemainingTime(300); // Reset the timer to 300 seconds
     }
   }, [remainingTime, loadData]);
 
@@ -128,7 +128,7 @@ function App() {
 
   const onRefresh = () => {
     loadData();
-    setRemainingTime(60);
+    setRemainingTime(300);
   };
 
   return (
