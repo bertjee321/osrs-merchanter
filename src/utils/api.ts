@@ -1,14 +1,4 @@
-import { Mapping, TradeDataList } from "../models/app.models";
-
-export const transformMappedData = (mappingData: Mapping[]) => {
-  const loadedMapping: Mapping[] = [];
-
-  for (const key in mappingData) {
-    loadedMapping.push({ ...mappingData[key] });
-  }
-
-  return loadedMapping;
-};
+import { TradeDataList } from "../models/app.models";
 
 export const transformHourPricesData = (hourPricesData: {
   data: TradeDataList[];

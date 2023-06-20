@@ -3,7 +3,7 @@ import useHttp from "../src/hooks/use-http";
 import { combineMappingAndHourPricesList } from "./utils/utils";
 import { PriceTable } from "./components/PriceTable";
 import { Mapping, PriceDataMapping, TradeDataList } from "./models/app.models";
-import { transformHourPricesData, transformMappedData } from "./utils/api";
+import { transformHourPricesData } from "./utils/api";
 
 function App() {
   const { sendRequest: fetchMappingData } = useHttp();
@@ -18,7 +18,7 @@ function App() {
   const loadData = () => {
     setIsLoading(true);
     const getTransformedMapping = (mappingData: Mapping[]) => {
-      setMappedItems(transformMappedData(mappingData));
+      setMappedItems(mappingData);
     };
     const getTransformedHourPricesData = (hourPricesData: {
       data: TradeDataList[];
