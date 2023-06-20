@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import useHttp from "../src/hooks/use-http";
-import {
-  calculateMargin,
-  isNullUndefinedEmptyStringOrZero,
-} from "./utils/utils";
+import { combineMappingAndHourPricesList } from "./utils/utils";
 import { PriceTable } from "./components/PriceTable";
 import { Mapping, PriceDataMapping, TradeDataList } from "./models/app.models";
 import { transformHourPricesData, transformMappedData } from "./utils/api";
@@ -67,63 +64,15 @@ function App() {
 
   useEffect(() => {
     if (remainingTime === 0) {
-      // Time has reached 0, perform the desired action
-      // For example, reload data or call a function
+      // Time has reached 0, reload data and reset timer to 300 seconds
       loadData();
-      setRemainingTime(300); // Reset the timer to 300 seconds
+      setRemainingTime(300);
     }
   }, [remainingTime, loadData]);
 
   const combineLists = () => {
-    const tempArray: PriceDataMapping[] = [];
-
-    mappedItems.map((item) => {
-      const combinedData = createCombinedData(item);
-      const updatedCombinedData = calculateMarginAndPotential(combinedData);
-
-      tempArray.push(updatedCombinedData);
-    });
-
-    setFullList(filterList(tempArray));
+    setFullList(combineMappingAndHourPricesList(mappedItems, hourPricesList));
     setIsLoading(false);
-  };
-
-  const createCombinedData = (item: Mapping): PriceDataMapping => {
-    const itemTraded = hourPricesList.find((trade) => trade.id === item.id);
-
-    return {
-      ...item,
-      avgHighPrice: itemTraded ? itemTraded.avgHighPrice : 0,
-      highPriceVolume: itemTraded ? itemTraded.highPriceVolume : 0,
-      avgLowPrice: itemTraded ? itemTraded.avgLowPrice : 0,
-      lowPriceVolume: itemTraded ? itemTraded.lowPriceVolume : 0,
-    };
-  };
-
-  const calculateMarginAndPotential = (
-    combinedData: PriceDataMapping
-  ): PriceDataMapping => {
-    const { avgHighPrice, avgLowPrice, limit } = combinedData;
-
-    const margin =
-      avgHighPrice !== undefined && avgLowPrice !== undefined
-        ? calculateMargin(avgHighPrice, avgLowPrice)
-        : 0;
-
-    const potential = limit ? margin * limit : 0;
-
-    return { ...combinedData, margin, potential };
-  };
-
-  // Currently filtering items out of list that do not have an avg. low/high price or volume in the past hour
-  const filterList = (data: PriceDataMapping[]) => {
-    return data.filter(
-      (item) =>
-        !isNullUndefinedEmptyStringOrZero(item.avgLowPrice) &&
-        !isNullUndefinedEmptyStringOrZero(item.avgHighPrice) &&
-        !isNullUndefinedEmptyStringOrZero(item.highPriceVolume) &&
-        !isNullUndefinedEmptyStringOrZero(item.lowPriceVolume)
-    );
   };
 
   const onRefresh = () => {
