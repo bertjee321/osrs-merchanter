@@ -30,7 +30,7 @@ const initialFilterState: Filter = {
   minMargin: undefined,
 };
 
-// Set initial sort state per table header, items should not be sorted on ID ascending at first
+// Set initial sort state per table header, items should not be sorted at first (set to Sort.None)
 const initialSortState: { [key: string]: Sort } = Object.keys(
   tableHeaders
 ).reduce((acc, key) => {
