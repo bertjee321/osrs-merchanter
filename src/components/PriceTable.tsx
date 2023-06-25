@@ -1,9 +1,13 @@
 import { useState } from "react";
-import { LoadingGrid } from "../UI/LoadingGrid";
+import { LoadingGrid } from "../UI/loading-grid/LoadingGrid";
 import { PriceTableTimer } from "./PriceTableTimer";
 import { PriceTableHeader } from "./PriceTableHeader";
 import { Filter } from "./models/price-table.models";
 import { Sort } from "./models/price-table.enums";
+import { PriceDataMapping } from "../models/app.models";
+
+// CSS imports
+import "./price-table.css";
 
 // set table headers
 const tableHeaders = {
@@ -26,7 +30,7 @@ const initialFilterState: Filter = {
   minMargin: undefined,
 };
 
-// Set initial sort state per table header, items should not be sorted at first (set to Sort.None)
+// Set initial sort state per table header, items should not be sorted on ID ascending at first
 const initialSortState: { [key: string]: Sort } = Object.keys(
   tableHeaders
 ).reduce((acc, key) => {
@@ -35,7 +39,7 @@ const initialSortState: { [key: string]: Sort } = Object.keys(
 }, {} as { [key: string]: Sort });
 
 export const PriceTable = (props: {
-  data: any;
+  data: PriceDataMapping[];
   loading: boolean;
   time: number;
   refresh: () => void;
@@ -181,6 +185,13 @@ export const PriceTable = (props: {
     props.refresh();
   };
 
+  const navigate = (id: number) => {
+    window.open(
+      `https://prices.runescape.wiki/osrs/item/${id.toString()}`,
+      "_blank"
+    );
+  };
+
   return (
     <>
       <PriceTableHeader onSubmit={submitHandler} />
@@ -208,7 +219,11 @@ export const PriceTable = (props: {
         {!props.loading && (
           <tbody>
             {sortedItems.map((data, index) => (
-              <tr key={index}>
+              <tr
+                key={index}
+                onClick={() => navigate(data.id)}
+                className="price-table__row"
+              >
                 {Object.keys(tableHeaders).map((key) => (
                   <td key={key}>
                     {[
@@ -217,10 +232,10 @@ export const PriceTable = (props: {
                       "margin",
                       "potential",
                     ].includes(key)
-                      ? data[key]
+                      ? (data as any)[key]
                           .toFixed(0)
                           .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                      : data[key]}
+                      : (data as any)[key]}
                   </td>
                 ))}
               </tr>
