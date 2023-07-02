@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { LoadingGrid } from "../UI/loading-grid/LoadingGrid";
-import { PriceTableTimer } from "./PriceTableTimer";
-import { PriceTableHeader } from "./PriceTableHeader";
-import { Filter } from "./models/price-table.models";
-import { Sort } from "./models/price-table.enums";
 import { PriceDataMapping } from "../models/app.models";
 import { filterItems, sortItems } from "../utils/price-table-utils";
+import { PriceTableHeader } from "./PriceTableHeader";
+import { PriceTableTimer } from "./PriceTableTimer";
+import { Sort } from "./models/price-table.enums";
+import { Filter } from "./models/price-table.models";
 
 // CSS imports
 import "./price-table.css";
@@ -59,7 +59,7 @@ export const PriceTable = (props: {
     return sortItems(filterItems(data, filter), sort);
   };
 
-  const itemList = filterAndSortItems(props.data, filter, sortItem)
+  const itemList = filterAndSortItems(props.data, filter, sortItem);
 
   const sortHandler = (itemKey: keyof typeof initialSortState) => {
     setSortItem((prevState) => {

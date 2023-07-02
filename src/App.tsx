@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import useHttp from "../src/hooks/use-http";
-import { combineMappingAndHourPricesList } from "./utils/utils";
 import { PriceTable } from "./components/PriceTable";
 import { Mapping, PriceDataMapping, TradeDataList } from "./models/app.models";
 import { transformHourPricesData } from "./utils/api";
+import { combineMappingAndHourPricesList } from "./utils/utils";
 
 function App() {
   const { sendRequest: fetchMappingData } = useHttp();
