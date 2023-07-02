@@ -5,11 +5,11 @@ import { PriceTableHeader } from "./PriceTableHeader";
 import { Filter } from "./models/price-table.models";
 import { Sort } from "./models/price-table.enums";
 import { PriceDataMapping } from "../models/app.models";
+import { filterItems, sortItems } from "../utils/price-table-utils";
 
 // CSS imports
 import "./price-table.css";
 
-// set table headers
 const tableHeaders = {
   id: "ID",
   name: "Name",
@@ -49,120 +49,19 @@ export const PriceTable = (props: {
   }>(initialSortState);
   const [filter, setFilter] = useState<Filter>(initialFilterState);
 
-  const filteredItems = [...props.data].filter((item) => {
-    if (filter.name) {
-      if (!item.name.toLowerCase().includes(filter.name.toLowerCase())) {
-        return false;
-      }
+  const filterAndSortItems = (
+    data: PriceDataMapping[],
+    filter: Filter,
+    sort: {
+      [key: string]: Sort;
     }
+  ) => {
+    return sortItems(filterItems(data, filter), sort);
+  };
 
-    if (filter.minBuyPrice) {
-      if (item.avgLowPrice < filter.minBuyPrice) {
-        return false;
-      }
-    }
+  const itemList = filterAndSortItems(props.data, filter, sortItem)
 
-    if (filter.maxBuyPrice) {
-      if (item.avgLowPrice > filter.maxBuyPrice) {
-        return false;
-      }
-    }
-
-    if (filter.minVolume) {
-      if (
-        item.highPriceVolume < filter.minVolume ||
-        item.lowPriceVolume < filter.minVolume
-      ) {
-        return false;
-      }
-    }
-
-    if (filter.minMargin) {
-      if (item.margin < filter.minMargin) {
-        return false;
-      }
-    }
-
-    return true;
-  });
-
-  //////////////////////////////////
-  ////// TO DO: SHORTEN BELOW //////
-  //////////////////////////////////
-
-  // sort items every time something in state (or props) changes
-  // sortedItems is then used to render items on screen
-  const sortedItems = filteredItems.sort((a, b) => {
-    // Compare the properties based on the sortItem values
-    if (sortItem.id !== Sort.None) {
-      return sortItem.id === Sort.Ascending ? a.id - b.id : b.id - a.id;
-    }
-
-    if (sortItem.name !== Sort.None) {
-      // Compare based on the "name" property
-      return sortItem.name === Sort.Ascending
-        ? a.name.localeCompare(b.name)
-        : b.name.localeCompare(a.name);
-    }
-
-    if (sortItem.limit !== Sort.None) {
-      // Compare based on the "limit" property
-      return sortItem.limit === Sort.Ascending
-        ? a.limit - b.limit
-        : b.limit - a.limit;
-    }
-
-    if (sortItem.avgHighPrice !== Sort.None) {
-      // Compare based on the "avgHighPrice" property
-      return sortItem.avgHighPrice === Sort.Ascending
-        ? a.avgHighPrice - b.avgHighPrice
-        : b.avgHighPrice - a.avgHighPrice;
-    }
-
-    if (sortItem.highPriceVolume !== Sort.None) {
-      // Compare based on the "highPriceVolume" property
-      return sortItem.highPriceVolume === Sort.Ascending
-        ? a.highPriceVolume - b.highPriceVolume
-        : b.highPriceVolume - a.highPriceVolume;
-    }
-
-    if (sortItem.avgLowPrice !== Sort.None) {
-      // Compare based on the "avgLowPrice" property
-      return sortItem.avgLowPrice === Sort.Ascending
-        ? a.avgLowPrice - b.avgLowPrice
-        : b.avgLowPrice - a.avgLowPrice;
-    }
-
-    if (sortItem.lowPriceVolume !== Sort.None) {
-      // Compare based on the "lowPriceVolume" property
-      return sortItem.lowPriceVolume === Sort.Ascending
-        ? a.lowPriceVolume - b.lowPriceVolume
-        : b.lowPriceVolume - a.lowPriceVolume;
-    }
-
-    if (sortItem.margin !== Sort.None) {
-      // Compare based on the "margin" property
-      return sortItem.margin === Sort.Ascending
-        ? a.margin - b.margin
-        : b.margin - a.margin;
-    }
-
-    if (sortItem.potential !== Sort.None) {
-      // Compare based on the "potential" property
-      return sortItem.potential === Sort.Ascending
-        ? a.potential - b.potential
-        : b.potential - a.potential;
-    }
-
-    // If no sort criteria matched, maintain the original order
-    return 0;
-  });
-
-  //////////////////////////////////
-  ////// TO DO: SHORTEN ABOVE //////
-  //////////////////////////////////
-
-  const handleSort = (itemKey: keyof typeof initialSortState) => {
+  const sortHandler = (itemKey: keyof typeof initialSortState) => {
     setSortItem((prevState) => {
       // Reset all sort properties to Sort.None
       const updatedState = { ...initialSortState };
@@ -185,7 +84,7 @@ export const PriceTable = (props: {
     props.refresh();
   };
 
-  const navigate = (id: number) => {
+  const navigateHandler = (id: number) => {
     window.open(
       `https://prices.runescape.wiki/osrs/item/${id.toString()}`,
       "_blank"
@@ -200,7 +99,7 @@ export const PriceTable = (props: {
         <thead className="table-dark">
           <tr>
             {Object.entries(tableHeaders).map(([key, tableHeader]) => (
-              <th onClick={() => handleSort(key)} key={key}>
+              <th onClick={() => sortHandler(key)} key={key}>
                 {tableHeader}
                 {key === "margin" && (
                   <span style={{ fontSize: "9px" }}> (-1% tax)</span>
@@ -218,10 +117,10 @@ export const PriceTable = (props: {
         </thead>
         {!props.loading && (
           <tbody>
-            {sortedItems.map((data, index) => (
+            {itemList.map((data, index) => (
               <tr
                 key={index}
-                onClick={() => navigate(data.id)}
+                onClick={() => navigateHandler(data.id)}
                 className="price-table__row"
               >
                 {Object.keys(tableHeaders).map((key) => (
