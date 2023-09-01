@@ -27,13 +27,20 @@ export function PriceTable<T extends { id: string }>(
 ) {
   const formatValue = (value: number | string | undefined): string => {
     if (typeof value === "number") {
-      return value.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      // if value is a number, return formatted string
+      return value.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."); // adds thousand seperators
     }
 
     if (typeof value === "string" && !isNaN(Number(value))) {
+      // if value is string and could be a number (e.g. "1123"), return formatted string
       return Number(value)
         .toFixed(0)
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        .replace(/\B(?=(\d{3})+(?!\d))/g, "."); // adds thousand seperators
+    }
+
+    if (typeof value === "string" && value.length > 0) {
+      // regular strings should be returned unchanged
+      return value;
     }
 
     return "";
