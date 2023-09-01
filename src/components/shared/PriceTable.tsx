@@ -25,6 +25,20 @@ interface PriceTableProps<T> {
 export function PriceTable<T extends { id: string }>(
   props: PriceTableProps<T>
 ) {
+  const formatValue = (value: number | string | undefined): string => {
+    if (typeof value === "number") {
+      return value.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    if (typeof value === "string" && !isNaN(Number(value))) {
+      return Number(value)
+        .toFixed(0)
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    return "";
+  };
+
   return (
     <>
       <table className="table table-striped table-bordered table-hover text-center">
@@ -59,15 +73,7 @@ export function PriceTable<T extends { id: string }>(
                 className="price-table__row"
               >
                 {Object.keys(props.headers).map((key) => (
-                  <td key={key}>
-                    {["avgHighPrice", "avgLowPrice", "low", "high"].includes(
-                      key
-                    )
-                      ? (data as any)[key]
-                          .toFixed(0)
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                      : (data as any)[key]}
-                  </td>
+                  <td key={key}>{formatValue((data as any)[key])}</td>
                 ))}
               </tr>
             ))}
