@@ -2,7 +2,7 @@ import {
   FullList,
   Mapping,
   TradeDataHour,
-  TradeDataLatest
+  TradeDataLatest,
 } from "../models/app.models";
 
 export const isNullOrUndefined = (data: any): boolean => {
@@ -45,18 +45,53 @@ const createCombinedDataList = (
     ...itemMapping,
     ...tradeDataHour,
     ...tradeDataLatest,
+    marginHour: calculateMargin(
+      tradeDataHour.avgHighPrice,
+      tradeDataHour.avgLowPrice
+    ),
+    marginLatest: calculateMargin(tradeDataLatest.high, tradeDataLatest.low),
+    potential: calculatePotential(
+      itemMapping.limit,
+      tradeDataHour.highPriceVolume,
+      tradeDataHour.lowPriceVolume,
+      tradeDataLatest.high,
+      tradeDataLatest.low
+    ),
   };
 };
 
-const calculateMarginAndPotential = (
-  sellPrice: number,
-  buyPrice: number,
-  limit: number
-): { margin: number; potential: number } => {
-  const margin = sellPrice * 0.99 - buyPrice;
-  const potential = margin * limit;
+const calculateMargin = (sellPrice: number, buyPrice: number): number => {
+  if (sellPrice < 100) {
+    // no tax for items < 100 gp each
+    return sellPrice - buyPrice;
+  }
 
-  return { margin, potential };
+  if (sellPrice > 499999999) {
+    // tax capped at 5mil for items > 499,999,999 gp each
+    return sellPrice - 5000000 - buyPrice;
+  }
+
+  // default 1% tax on each item
+  return sellPrice * 0.99 - buyPrice;
+};
+
+const calculatePotential = (
+  geLimit: number | undefined,
+  volBuy: number,
+  volSell: number,
+  high: number,
+  low: number
+): number => {
+  const averageVolume = (volBuy + volSell) / 2;
+  const margin = calculateMargin(high, low);
+
+  if (geLimit) {
+    // if averageVolume is higher than GE limit, return geLimit * margin
+    // else if averageVolume is lower than GE limit, return averageVolume * margin
+    return averageVolume > geLimit ? geLimit * margin : averageVolume * margin;
+  }
+
+  return 0;
 };
 
 const filterPriceList = (data: FullList[]): FullList[] => {
