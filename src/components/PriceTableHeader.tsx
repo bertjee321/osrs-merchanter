@@ -23,7 +23,7 @@ export const PriceTableHeader = (props: { onSubmit: (data: any) => void }) => {
 
       {showFilter && (
         <div>
-          <PriceTableFilter filterSubmitHandler={props.onSubmit} />
+          <PriceTableFilter onSubmit={props.onSubmit} />
         </div>
       )}
     </>

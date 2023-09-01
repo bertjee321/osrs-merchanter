@@ -1,8 +1,8 @@
 import { Sort } from "../components/models/price-table.enums";
 import { Filter } from "../components/models/price-table.models";
-import { PriceDataMapping } from "../models/app.models";
+import { FullList } from "../models/app.models";
 
-export const filterItems = (data: PriceDataMapping[], filter: Filter) => {
+export const filterItems = (data: FullList[], filter: Filter) => {
   return data.filter((item) => {
     if (filter.name) {
       if (!item.name.toLowerCase().includes(filter.name.toLowerCase())) {
@@ -31,26 +31,20 @@ export const filterItems = (data: PriceDataMapping[], filter: Filter) => {
       }
     }
 
-    if (filter.minMargin) {
-      if (item.margin < filter.minMargin) {
-        return false;
-      }
-    }
-
     return true;
   });
 };
 
 export const sortItems = (
-  data: PriceDataMapping[],
+  data: FullList[],
   sortItem: {
     [key: string]: Sort;
   }
-): PriceDataMapping[] => {
+): FullList[] => {
   return data.sort((a, b) => {
     // Compare the properties based on the sortItem values
     if (sortItem.id !== Sort.None) {
-      return sortItem.id === Sort.Ascending ? a.id - b.id : b.id - a.id;
+      return sortItem.id === Sort.Ascending ? +a.id - +b.id : +b.id - +a.id;
     }
 
     if (sortItem.name !== Sort.None) {
@@ -60,11 +54,13 @@ export const sortItems = (
         : b.name.localeCompare(a.name);
     }
 
-    if (sortItem.limit !== Sort.None) {
-      // Compare based on the "limit" property
-      return sortItem.limit === Sort.Ascending
-        ? a.limit - b.limit
-        : b.limit - a.limit;
+    if (a.limit && b.limit) {
+      if (sortItem.limit !== Sort.None) {
+        // Compare based on the "limit" property
+        return sortItem.limit === Sort.Ascending
+          ? a.limit - b.limit
+          : b.limit - a.limit;
+      }
     }
 
     if (sortItem.avgHighPrice !== Sort.None) {
@@ -95,18 +91,41 @@ export const sortItems = (
         : b.lowPriceVolume - a.lowPriceVolume;
     }
 
-    if (sortItem.margin !== Sort.None) {
-      // Compare based on the "margin" property
-      return sortItem.margin === Sort.Ascending
-        ? a.margin - b.margin
-        : b.margin - a.margin;
+    if (a.marginHour && b.marginHour) {
+      if (sortItem.marginHour !== Sort.None) {
+        // Compare based on the "margin" property
+        return sortItem.margin === Sort.Ascending
+          ? a.marginHour - b.marginHour
+          : b.marginHour - a.marginHour;
+      }
     }
 
-    if (sortItem.potential !== Sort.None) {
-      // Compare based on the "potential" property
-      return sortItem.potential === Sort.Ascending
-        ? a.potential - b.potential
-        : b.potential - a.potential;
+    if (a.marginLatest && b.marginLatest) {
+      if (sortItem.marginLatest !== Sort.None) {
+        // Compare based on the "margin" property
+        return sortItem.margin === Sort.Ascending
+          ? a.marginLatest - b.marginLatest
+          : b.marginLatest - a.marginLatest;
+      }
+    }
+
+    if (sortItem.low !== Sort.None) {
+      return sortItem.low === Sort.Ascending ? a.low - b.low : b.low - a.low;
+    }
+
+    if (sortItem.high !== Sort.None) {
+      return sortItem.high === Sort.Ascending
+        ? a.high - b.high
+        : b.high - a.high;
+    }
+
+    if (a.potential && b.potential) {
+      if (sortItem.potential !== Sort.None) {
+        // Compare based on the "potential" property
+        return sortItem.potential === Sort.Ascending
+          ? a.potential - b.potential
+          : b.potential - a.potential;
+      }
     }
 
     // If no sort criteria matched, maintain the original order

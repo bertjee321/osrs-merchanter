@@ -1,7 +1,7 @@
 import useInput from "../hooks/use-input";
 
 export const PriceTableFilter = (props: {
-  filterSubmitHandler: (arg0: {
+  onSubmit: (arg0: {
     name: string;
     minBuyPrice: string;
     maxBuyPrice: string;
@@ -46,7 +46,7 @@ export const PriceTableFilter = (props: {
       minMargin: enteredMinMargin,
     };
 
-    props.filterSubmitHandler(enteredData);
+    props.onSubmit(enteredData);
   };
 
   const resetHandler = () => {

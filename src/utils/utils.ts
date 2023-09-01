@@ -1,4 +1,9 @@
-import { Mapping, PriceDataMapping, TradeDataList } from "../models/app.models";
+import {
+  FullList,
+  Mapping,
+  TradeDataHour,
+  TradeDataLatest
+} from "../models/app.models";
 
 export const isNullOrUndefined = (data: any): boolean => {
   return data === undefined || data === null;
@@ -12,34 +17,34 @@ export const isNullUndefinedEmptyStringOrZero = (data: any): boolean => {
   return data === undefined || data === null || data === "" || data === 0;
 };
 
-export const combineMappingAndHourPricesList = (
+export const combineMappingAndPriceLists = (
   mappedItems: Mapping[],
-  hourPricesList: TradeDataList[]
-): PriceDataMapping[] => {
-  const mappedHourPrices: PriceDataMapping[] = [];
+  hourPricesList: TradeDataHour[],
+  latestPricesList: TradeDataLatest[]
+): FullList[] => {
+  const fullList: FullList[] = [];
 
   mappedItems.forEach((item) => {
-    const itemTraded = hourPricesList.find((trade) => trade.id === item.id);
-    if (itemTraded) {
-      mappedHourPrices.push(createCombinedData(item, itemTraded));
+    const tradedHour = hourPricesList.find((trade) => trade.id === item.id);
+    const tradedLatest = latestPricesList.find((trade) => trade.id === item.id);
+
+    if (tradedHour && tradedLatest) {
+      fullList.push(createCombinedDataList(item, tradedHour, tradedLatest));
     }
   });
 
-  return filterList(mappedHourPrices);
+  return filterPriceList(fullList);
 };
 
-const createCombinedData = (itemMapped: Mapping, itemTraded: TradeDataList) => {
+const createCombinedDataList = (
+  itemMapping: Mapping,
+  tradeDataHour: TradeDataHour,
+  tradeDataLatest: TradeDataLatest
+): FullList => {
   return {
-    ...itemMapped,
-    avgHighPrice: itemTraded.avgHighPrice,
-    highPriceVolume: itemTraded.highPriceVolume,
-    avgLowPrice: itemTraded.avgLowPrice,
-    lowPriceVolume: itemTraded.lowPriceVolume,
-    ...calculateMarginAndPotential(
-      itemTraded.avgHighPrice,
-      itemTraded.avgLowPrice,
-      itemMapped.limit
-    ),
+    ...itemMapping,
+    ...tradeDataHour,
+    ...tradeDataLatest,
   };
 };
 
@@ -54,7 +59,7 @@ const calculateMarginAndPotential = (
   return { margin, potential };
 };
 
-const filterList = (data: PriceDataMapping[]): PriceDataMapping[] => {
+const filterPriceList = (data: FullList[]): FullList[] => {
   // filtering items out of list that do not have an avg. low/high price or volume in the past hour
   return data.filter(
     (item) =>
