@@ -105,7 +105,6 @@ export const ItemPrices = () => {
       combineMappingAndPriceLists(mappedItems, hourPricesList, latestPricesList)
     );
     setIsLoading(false);
-    console.log(fullList)
   };
 
   const onRefresh = () => {
