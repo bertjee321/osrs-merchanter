@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchHourPrices, transformHourlyPriceResponse } from "./api/hour-prices.api";
+import { fetchHourPrices } from "./api/hour-prices.api";
 import { fetchItemMapping } from "./api/item-mapping.api";
 import { PriceTable } from "./components/PriceTable";
 import { PriceDataMapping } from "./models/app.models";
@@ -8,6 +8,7 @@ import { combineMappingAndHourPricesList } from "./utils/utils";
 function App() {
   const [fullList, setFullList] = useState<PriceDataMapping[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,16 +18,19 @@ function App() {
 
       if (!mappingData || !hourPricesData) {
         setIsLoading(false);
+        setIsError(true);
+        console.error("Error fetching data");
         return;
       }
 
       const combinedList = combineMappingAndHourPricesList(
         mappingData,
-        transformHourlyPriceResponse(hourPricesData)
+        hourPricesData
       );
 
       setFullList(combinedList);
       setIsLoading(false);
+      setIsError(false);
     };
 
     fetchData();
@@ -34,9 +38,8 @@ function App() {
 
   return (
     <div className="container text-center">
-      <PriceTable data={fullList} loading={isLoading} />
+      <PriceTable data={fullList} loading={isLoading} error={isError} />
     </div>
-
   );
 }
 

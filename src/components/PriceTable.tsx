@@ -40,6 +40,7 @@ const initialSortState: { [key: string]: Sort } = Object.keys(
 export const PriceTable = (props: {
   data: PriceDataMapping[];
   loading: boolean;
+  error: boolean;
 }) => {
   const [sortItem, setSortItem] = useState<{
     [key: string]: Sort;
@@ -107,7 +108,7 @@ export const PriceTable = (props: {
             ))}
           </tr>
         </thead>
-        {!props.loading && (
+        {!props.loading && !props.error && (
           <tbody>
             {itemList.map((data, index) => (
               <tr
@@ -138,6 +139,12 @@ export const PriceTable = (props: {
         <>
           <LoadingGrid /> <h4>Fetching data ...</h4>
         </>
+      )}
+      {props.error && (
+        <div className="alert alert-danger" role="alert">
+          {" "}
+          Something went wrong!
+        </div>
       )}
     </>
   );
