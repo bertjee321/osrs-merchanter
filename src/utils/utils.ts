@@ -1,4 +1,8 @@
-import { Mapping, PriceDataMapping, TradeDataList } from "../models/app.models";
+import {
+  HourlyPriceEntry,
+  Mapping,
+  PriceDataMapping,
+} from "../models/app.models";
 
 export const isNullOrUndefined = (data: any): boolean => {
   return data === undefined || data === null;
@@ -14,7 +18,7 @@ export const isNullUndefinedEmptyStringOrZero = (data: any): boolean => {
 
 export const combineMappingAndHourPricesList = (
   mappedItems: Mapping[],
-  hourPricesList: TradeDataList[]
+  hourPricesList: Array<HourlyPriceEntry>
 ): PriceDataMapping[] => {
   const mappedHourPrices: PriceDataMapping[] = [];
 
@@ -28,7 +32,10 @@ export const combineMappingAndHourPricesList = (
   return filterList(mappedHourPrices);
 };
 
-const createCombinedData = (itemMapped: Mapping, itemTraded: TradeDataList) => {
+const createCombinedData = (
+  itemMapped: Mapping,
+  itemTraded: HourlyPriceEntry
+) => {
   const { avgHighPrice, highPriceVolume, avgLowPrice, lowPriceVolume } =
     itemTraded;
   const { limit: geLimit } = itemMapped;

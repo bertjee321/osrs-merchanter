@@ -13,6 +13,10 @@ export interface TradeDataList extends PriceData {
   potential: number; // Computed property (e.g., margin * volume)
 }
 
+export interface HourlyPriceEntry extends PriceData {
+  id: number;
+}
+
 // Represents static item metadata from the mapping API
 export interface Mapping {
   id: number;
