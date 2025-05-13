@@ -13,7 +13,6 @@ function App() {
   const [mappedItems, setMappedItems] = useState<Mapping[]>([]);
   const [fullList, setFullList] = useState<PriceDataMapping[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(300); // Countdown timer 5 min
 
   const loadData = () => {
     setIsLoading(true);
@@ -41,53 +40,23 @@ function App() {
   };
 
   useEffect(() => {
-    // Load data initially
-    loadData();
-
-    // Set up interval to load data every 300 seconds
-    const intervalId = setInterval(() => {
-      setRemainingTime((prevTime) => prevTime - 1);
-    }, 1000);
-
-    // Clean up the interval and reset the timer when the component unmounts
-    return () => {
-      clearInterval(intervalId);
-      setRemainingTime(300);
-    };
-  }, []);
-
-  useEffect(() => {
     if (mappedItems.length > 0 && hourPricesList.length > 0) {
       combineLists();
     }
   }, [mappedItems, hourPricesList]);
 
   useEffect(() => {
-    if (remainingTime === 0) {
-      // Time has reached 0, reload data and reset timer to 300 seconds
-      loadData();
-      setRemainingTime(300);
-    }
-  }, [remainingTime, loadData]);
+    loadData();
+  }, []);
 
   const combineLists = () => {
     setFullList(combineMappingAndHourPricesList(mappedItems, hourPricesList));
     setIsLoading(false);
   };
 
-  const onRefresh = () => {
-    loadData();
-    setRemainingTime(300);
-  };
-
   return (
     <div className="container text-center">
-      <PriceTable
-        data={fullList}
-        loading={isLoading}
-        time={remainingTime}
-        refresh={onRefresh}
-      />
+      <PriceTable data={fullList} loading={isLoading} />
     </div>
   );
 }

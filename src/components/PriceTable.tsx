@@ -3,7 +3,6 @@ import { LoadingGrid } from "../UI/loading-grid/LoadingGrid";
 import { PriceDataMapping } from "../models/app.models";
 import { filterItems, sortItems } from "../utils/price-table-utils";
 import { PriceTableHeader } from "./PriceTableHeader";
-import { PriceTableTimer } from "./PriceTableTimer";
 import { Sort } from "./models/price-table.enums";
 import { Filter } from "./models/price-table.models";
 
@@ -41,8 +40,6 @@ const initialSortState: { [key: string]: Sort } = Object.keys(
 export const PriceTable = (props: {
   data: PriceDataMapping[];
   loading: boolean;
-  time: number;
-  refresh: () => void;
 }) => {
   const [sortItem, setSortItem] = useState<{
     [key: string]: Sort;
@@ -80,10 +77,6 @@ export const PriceTable = (props: {
     setFilter(data);
   };
 
-  const refreshHandler = () => {
-    props.refresh();
-  };
-
   const navigateHandler = (id: number) => {
     window.open(
       `https://prices.runescape.wiki/osrs/item/${id.toString()}`,
@@ -94,7 +87,6 @@ export const PriceTable = (props: {
   return (
     <>
       <PriceTableHeader onSubmit={submitHandler} />
-      <PriceTableTimer onRefresh={refreshHandler} timeInSeconds={props.time} />
       <table className="table table-striped table-bordered table-hover text-center">
         <thead className="table-dark">
           <tr>
