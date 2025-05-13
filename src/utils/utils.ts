@@ -29,30 +29,49 @@ export const combineMappingAndHourPricesList = (
 };
 
 const createCombinedData = (itemMapped: Mapping, itemTraded: TradeDataList) => {
+  const { avgHighPrice, highPriceVolume, avgLowPrice, lowPriceVolume } =
+    itemTraded;
+  const { limit: geLimit } = itemMapped;
+
+  const margin = calculateMargin(avgHighPrice, avgLowPrice);
+  const potential = calculatePotential(
+    geLimit,
+    highPriceVolume,
+    lowPriceVolume,
+    margin
+  );
+
   return {
     ...itemMapped,
-    avgHighPrice: itemTraded.avgHighPrice,
-    highPriceVolume: itemTraded.highPriceVolume,
-    avgLowPrice: itemTraded.avgLowPrice,
-    lowPriceVolume: itemTraded.lowPriceVolume,
-    ...calculateMarginAndPotential(
-      itemTraded.avgHighPrice,
-      itemTraded.avgLowPrice,
-      itemMapped.limit
-    ),
+    avgHighPrice,
+    highPriceVolume,
+    avgLowPrice,
+    lowPriceVolume,
+    margin,
+    potential,
   };
 };
 
-const calculateMarginAndPotential = (
-  sellPrice: number,
-  buyPrice: number,
-  limit: number
-): { margin: number; potential: number } => {
+const calculateMargin = (sellPrice: number, buyPrice: number) => {
   const margin = sellPrice * 0.99 - buyPrice;
-  const potential = margin * limit;
-
-  return { margin, potential };
+  return Math.floor(margin);
 };
+
+function calculatePotential(
+  geLimit: number,
+  highVolume: number,
+  lowVolume: number,
+  margin: number
+): number {
+  const avgVolumePer4h = ((highVolume + lowVolume) / 2) * 4;
+  const realisticQuantity = Math.min(geLimit, avgVolumePer4h);
+  const confidence =
+    Math.min(highVolume, lowVolume) / Math.max(highVolume, lowVolume);
+
+  const potential = realisticQuantity * margin * confidence;
+
+  return Math.floor(potential); // afronden op hele GP
+}
 
 const filterList = (data: PriceDataMapping[]): PriceDataMapping[] => {
   // filtering items out of list that do not have an avg. low/high price or volume in the past hour
