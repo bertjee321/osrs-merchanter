@@ -9,8 +9,8 @@ export interface PriceData {
 // Represents a snapshot of price data from the hourly API
 export interface TradeDataList extends PriceData {
   id?: number;
-  margin?: number; // Computed property (e.g., high - low)
-  potential?: number; // Computed property (e.g., margin * volume)
+  margin: number; // Computed property (e.g., high - low)
+  potential: number; // Computed property (e.g., margin * volume)
 }
 
 // Represents static item metadata from the mapping API
