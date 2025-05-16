@@ -11,6 +11,17 @@ export const PriceTableBody = ({
   itemList,
   navigateHandler,
 }: PriceTableBodyProps) => {
+  // Helper function to format cell values
+  const formatCellValue = (key: string, value: unknown) => {
+    const numberKeys = ["avgHighPrice", "avgLowPrice", "margin", "potential"];
+
+    if (numberKeys.includes(key) && typeof value === "number") {
+      return value.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    return value;
+  };
+
   return (
     <tbody>
       {itemList.map((data, index) => (
@@ -21,13 +32,12 @@ export const PriceTableBody = ({
         >
           {Object.keys(tableHeaders).map((key) => (
             <td key={key}>
-              {["avgHighPrice", "avgLowPrice", "margin", "potential"].includes(
-                key
-              )
-                ? (data[key as keyof PriceDataMapping] as number)
-                    .toFixed(0)
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                : data[key as keyof PriceDataMapping]}
+              {
+                formatCellValue(
+                  key,
+                  data[key as keyof PriceDataMapping]
+                ) as React.ReactNode
+              }
             </td>
           ))}
         </tr>
