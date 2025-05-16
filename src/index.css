@@ -40,3 +40,7 @@ th:hover {
 .refresh-icon:hover .refresh-tooltiptext {
   visibility: visible;
 }
+
+.font-size-small {
+  font-size: 9px;
+}
