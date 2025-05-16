@@ -2,7 +2,7 @@ import { useState } from "react";
 import { LoadingGrid } from "../UI/loading-grid/LoadingGrid";
 import { useFilteredAndSortedItems } from "../hooks/use-filtered-and-sorted-items";
 import { PriceDataMapping } from "../models/app.models";
-import TableStyles from "./PriceTable.module.css";
+import { PriceTableBody } from "./PriceTableBody";
 import { PriceTableHead } from "./PriceTableHead";
 import { PriceTableHeader } from "./PriceTableHeader";
 import {
@@ -58,49 +58,38 @@ export const PriceTable = (props: PriceTableProps) => {
     );
   };
 
+  // Handler for rendering loading state
+  const renderLoading = () => (
+    <>
+      <LoadingGrid />
+      <h4>Fetching data ...</h4>
+    </>
+  );
+
+  // Handler for rendering error message
+  const renderError = () => (
+    <div className="alert alert-danger" role="alert">
+      Something went wrong!
+      <br />
+    </div>
+  );
+
+  // Handler for rendering the table with item data
+  const renderTable = () => (
+    <table className="table table-striped table-bordered table-hover text-center">
+      <PriceTableHead sortItem={sortItem} sortHandler={sortHandler} />
+      <PriceTableBody itemList={itemList} navigateHandler={navigateHandler} />
+    </table>
+  );
+
   return (
     <>
       <PriceTableHeader onSubmit={submitHandler} />
-      <table className="table table-striped table-bordered table-hover text-center">
-        <PriceTableHead sortItem={sortItem} sortHandler={sortHandler} />
-        {!props.loading && !props.error && (
-          <tbody>
-            {itemList.map((data, index) => (
-              <tr
-                key={index}
-                onClick={() => navigateHandler(data.id)}
-                className={TableStyles["price-table__row"]}
-              >
-                {Object.keys(tableHeaders).map((key) => (
-                  <td key={key}>
-                    {[
-                      "avgHighPrice",
-                      "avgLowPrice",
-                      "margin",
-                      "potential",
-                    ].includes(key)
-                      ? (data[key as keyof PriceDataMapping] as number)
-                          .toFixed(0)
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                      : data[key as keyof PriceDataMapping]}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        )}
-      </table>
-      {props.loading && (
-        <>
-          <LoadingGrid /> <h4>Fetching data ...</h4>
-        </>
-      )}
-      {props.error && (
-        <div className="alert alert-danger" role="alert">
-          {" "}
-          Something went wrong!
-        </div>
-      )}
+      {props.loading
+        ? renderLoading()
+        : props.error
+        ? renderError()
+        : renderTable()}
     </>
   );
 };
