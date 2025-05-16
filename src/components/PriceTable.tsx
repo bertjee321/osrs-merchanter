@@ -2,10 +2,16 @@ import { useState } from "react";
 import { LoadingGrid } from "../UI/loading-grid/LoadingGrid";
 import { useFilteredAndSortedItems } from "../hooks/use-filtered-and-sorted-items";
 import { PriceDataMapping } from "../models/app.models";
+import TableStyles from "./PriceTable.module.css";
+import { PriceTableHead } from "./PriceTableHead";
 import { PriceTableHeader } from "./PriceTableHeader";
+import {
+  initialFilterState,
+  initialSortState,
+  tableHeaders,
+} from "./constants/price-table.constants";
 import { Sort } from "./models/price-table.enums";
 import { Filter } from "./models/price-table.models";
-import "./price-table.css";
 
 interface PriceTableProps {
   data: PriceDataMapping[];
@@ -56,35 +62,14 @@ export const PriceTable = (props: PriceTableProps) => {
     <>
       <PriceTableHeader onSubmit={submitHandler} />
       <table className="table table-striped table-bordered table-hover text-center">
-        <thead className="table-dark">
-          <tr>
-            {Object.entries(tableHeaders).map(([key, tableHeader]) => (
-              <th
-                onClick={() => sortHandler(key as keyof typeof tableHeaders)}
-                key={key}
-              >
-                {tableHeader}
-                {key === "margin" && (
-                  <span style={{ fontSize: "9px" }}> (-1% tax)</span>
-                )}{" "}
-                {sortItem[key] === Sort.Descending ? (
-                  <span className="bi bi-sort-down" />
-                ) : sortItem[key] === Sort.Ascending ? (
-                  <span className="bi bi-sort-down-alt" />
-                ) : (
-                  <span className="bi bi-arrow-down-up" />
-                )}
-              </th>
-            ))}
-          </tr>
-        </thead>
+        <PriceTableHead sortItem={sortItem} sortHandler={sortHandler} />
         {!props.loading && !props.error && (
           <tbody>
             {itemList.map((data, index) => (
               <tr
                 key={index}
                 onClick={() => navigateHandler(data.id)}
-                className="price-table__row"
+                className={TableStyles["price-table__row"]}
               >
                 {Object.keys(tableHeaders).map((key) => (
                   <td key={key}>
@@ -119,34 +104,3 @@ export const PriceTable = (props: PriceTableProps) => {
     </>
   );
 };
-
-// Define the table headers with their corresponding keys
-const tableHeaders = {
-  id: "ID",
-  name: "Name",
-  limit: "Ge Limit",
-  avgHighPrice: "Avg. High",
-  highPriceVolume: "Vol. High",
-  avgLowPrice: "Avg. Low",
-  lowPriceVolume: "Vol. Low",
-  margin: "Margin",
-  potential: "Potential",
-};
-
-// Set initial filter state per table header, items should not be filtered at first (set to undefined)
-const initialFilterState: Filter = {
-  name: undefined,
-  minBuyPrice: undefined,
-  maxBuyPrice: undefined,
-  minVolume: undefined,
-  minMargin: undefined,
-};
-
-// Set initial sort state per table header, items should not be sorted at first (set to Sort.None)
-const initialSortState: Record<string, Sort> = Object.keys(tableHeaders).reduce(
-  (acc, key) => {
-    acc[key] = Sort.None;
-    return acc;
-  },
-  {} as Record<string, Sort>
-);
