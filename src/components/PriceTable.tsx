@@ -7,42 +7,15 @@ import { Sort } from "./models/price-table.enums";
 import { Filter } from "./models/price-table.models";
 import "./price-table.css";
 
-const tableHeaders = {
-  id: "ID",
-  name: "Name",
-  limit: "Ge Limit",
-  avgHighPrice: "Avg. High",
-  highPriceVolume: "Vol. High",
-  avgLowPrice: "Avg. Low",
-  lowPriceVolume: "Vol. Low",
-  margin: "Margin",
-  potential: "Potential",
-};
-
-const initialFilterState: Filter = {
-  name: undefined,
-  minBuyPrice: undefined,
-  maxBuyPrice: undefined,
-  minVolume: undefined,
-  minMargin: undefined,
-};
-
-// Set initial sort state per table header, items should not be sorted at first (set to Sort.None)
-const initialSortState: { [key: string]: Sort } = Object.keys(
-  tableHeaders
-).reduce((acc, key) => {
-  acc[key] = Sort.None;
-  return acc;
-}, {} as { [key: string]: Sort });
-
-export const PriceTable = (props: {
+interface PriceTableProps {
   data: PriceDataMapping[];
   loading: boolean;
   error: boolean;
-}) => {
-  const [sortItem, setSortItem] = useState<{
-    [key: string]: Sort;
-  }>(initialSortState);
+}
+
+export const PriceTable = (props: PriceTableProps) => {
+  const [sortItem, setSortItem] =
+    useState<Record<string, Sort>>(initialSortState);
   const [filter, setFilter] = useState<Filter>(initialFilterState);
 
   const itemList = useFilteredAndSortedItems({
@@ -51,12 +24,11 @@ export const PriceTable = (props: {
     sort: sortItem,
   });
 
-  console.log("itemList", itemList);
-
-  const sortHandler = (itemKey: keyof typeof initialSortState) => {
+  // Handler for sorting items based on the clicked header
+  const sortHandler = (itemKey: keyof typeof tableHeaders) => {
     setSortItem((prevState) => {
       // Reset all sort properties to Sort.None
-      const updatedState = { ...initialSortState };
+      const updatedState: Record<string, Sort> = { ...initialSortState };
 
       // Set the sort property for the clicked item to the opposite value
       updatedState[itemKey] =
@@ -72,6 +44,7 @@ export const PriceTable = (props: {
     setFilter(data);
   };
 
+  // Handler for navigating to the OSRS wiki page of the clicked item
   const navigateHandler = (id: number) => {
     window.open(
       `https://prices.runescape.wiki/osrs/item/${id.toString()}`,
@@ -86,7 +59,10 @@ export const PriceTable = (props: {
         <thead className="table-dark">
           <tr>
             {Object.entries(tableHeaders).map(([key, tableHeader]) => (
-              <th onClick={() => sortHandler(key)} key={key}>
+              <th
+                onClick={() => sortHandler(key as keyof typeof tableHeaders)}
+                key={key}
+              >
                 {tableHeader}
                 {key === "margin" && (
                   <span style={{ fontSize: "9px" }}> (-1% tax)</span>
@@ -118,10 +94,10 @@ export const PriceTable = (props: {
                       "margin",
                       "potential",
                     ].includes(key)
-                      ? (data as any)[key]
+                      ? (data[key as keyof PriceDataMapping] as number)
                           .toFixed(0)
                           .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                      : (data as any)[key]}
+                      : data[key as keyof PriceDataMapping]}
                   </td>
                 ))}
               </tr>
@@ -143,3 +119,34 @@ export const PriceTable = (props: {
     </>
   );
 };
+
+// Define the table headers with their corresponding keys
+const tableHeaders = {
+  id: "ID",
+  name: "Name",
+  limit: "Ge Limit",
+  avgHighPrice: "Avg. High",
+  highPriceVolume: "Vol. High",
+  avgLowPrice: "Avg. Low",
+  lowPriceVolume: "Vol. Low",
+  margin: "Margin",
+  potential: "Potential",
+};
+
+// Set initial filter state per table header, items should not be filtered at first (set to undefined)
+const initialFilterState: Filter = {
+  name: undefined,
+  minBuyPrice: undefined,
+  maxBuyPrice: undefined,
+  minVolume: undefined,
+  minMargin: undefined,
+};
+
+// Set initial sort state per table header, items should not be sorted at first (set to Sort.None)
+const initialSortState: Record<string, Sort> = Object.keys(tableHeaders).reduce(
+  (acc, key) => {
+    acc[key] = Sort.None;
+    return acc;
+  },
+  {} as Record<string, Sort>
+);
