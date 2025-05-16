@@ -3,7 +3,7 @@ import axiosInstance from "./axios";
 
 export const fetchHourPrices = async (): Promise<HourlyPriceEntry[]> => {
   const response = await axiosInstance.get<{
-    data: { [key: number]: PriceData };
+    data: Record<number, PriceData>;
   }>(`/1h`);
   return transformHourlyPriceResponse(response.data);
 };
