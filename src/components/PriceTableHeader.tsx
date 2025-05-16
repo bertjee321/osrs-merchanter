@@ -10,6 +10,7 @@ export const PriceTableHeader = (props: { onSubmit: (data: any) => void }) => {
 
   return (
     <>
+      <h1 className="text-center">OSRS Full Price Table</h1>
       <h2 className="text-start">
         Filter{" "}
         <span
