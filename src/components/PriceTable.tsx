@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { LoadingGrid } from "../UI/loading-grid/LoadingGrid";
+import { useFilteredAndSortedItems } from "../hooks/use-filtered-and-sorted-items";
 import { PriceDataMapping } from "../models/app.models";
-import { filterItems, sortItems } from "../utils/price-table-utils";
 import { PriceTableHeader } from "./PriceTableHeader";
 import { Sort } from "./models/price-table.enums";
 import { Filter } from "./models/price-table.models";
-
-// CSS imports
 import "./price-table.css";
 
 const tableHeaders = {
@@ -47,17 +45,13 @@ export const PriceTable = (props: {
   }>(initialSortState);
   const [filter, setFilter] = useState<Filter>(initialFilterState);
 
-  const filterAndSortItems = (
-    data: PriceDataMapping[],
-    filter: Filter,
-    sort: {
-      [key: string]: Sort;
-    }
-  ) => {
-    return sortItems(filterItems(data, filter), sort);
-  };
+  const itemList = useFilteredAndSortedItems({
+    data: props.data,
+    filter,
+    sort: sortItem,
+  });
 
-  const itemList = filterAndSortItems(props.data, filter, sortItem);
+  console.log("itemList", itemList);
 
   const sortHandler = (itemKey: keyof typeof initialSortState) => {
     setSortItem((prevState) => {

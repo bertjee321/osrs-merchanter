@@ -70,12 +70,14 @@ function calculatePotential(
   lowVolume: number,
   margin: number
 ): number {
+  if (!geLimit) {
+    return 0; // Return 0 if geLimit is not provided
+  }
+
   const avgVolumePer4h = ((highVolume + lowVolume) / 2) * 4;
   const realisticQuantity = Math.min(geLimit, avgVolumePer4h);
-  const confidence =
-    Math.min(highVolume, lowVolume) / Math.max(highVolume, lowVolume);
 
-  const potential = realisticQuantity * margin * confidence;
+  const potential = realisticQuantity * margin;
 
   return Math.floor(potential); // afronden op hele GP
 }
