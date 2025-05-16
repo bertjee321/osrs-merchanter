@@ -10,6 +10,17 @@ export const PriceTableHead = ({
   sortItem,
   sortHandler,
 }: PriceTableHeadProps) => {
+  // Helper function to determine the sort icon based on the sort state
+  const sortIcon = (key: keyof typeof tableHeaders) => {
+    if (sortItem[key] === Sort.Descending) {
+      return <span className="bi bi-sort-down" />;
+    } else if (sortItem[key] === Sort.Ascending) {
+      return <span className="bi bi-sort-down-alt" />;
+    } else {
+      return <span className="bi bi-arrow-down-up" />;
+    }
+  };
+
   return (
     <thead className="table-dark">
       <tr>
@@ -22,13 +33,7 @@ export const PriceTableHead = ({
             {key === "margin" && (
               <span className="font-size-small"> (-1% tax)</span>
             )}{" "}
-            {sortItem[key] === Sort.Descending ? (
-              <span className="bi bi-sort-down" />
-            ) : sortItem[key] === Sort.Ascending ? (
-              <span className="bi bi-sort-down-alt" />
-            ) : (
-              <span className="bi bi-arrow-down-up" />
-            )}
+            {sortIcon(key as keyof typeof tableHeaders)}
           </th>
         ))}
       </tr>
