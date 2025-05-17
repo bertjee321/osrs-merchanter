@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchHourPrices } from "./api/hour-prices.api";
 import { fetchItemMapping } from "./api/item-mapping.api";
-import { PriceTable } from "./components/PriceTable";
+import { PriceTable } from "./components/price-table/PriceTable";
 import { PriceDataMapping } from "./models/app.models";
 import { combineMappingAndHourPricesList } from "./utils/utils";
 

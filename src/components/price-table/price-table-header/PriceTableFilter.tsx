@@ -1,4 +1,4 @@
-import useInput from "../hooks/use-input";
+import useInput from "../../../hooks/use-input";
 
 export const PriceTableFilter = (props: {
   filterSubmitHandler: (arg0: {

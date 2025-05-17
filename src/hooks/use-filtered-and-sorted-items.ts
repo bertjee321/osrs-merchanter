@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { Sort } from "../components/models/price-table.enums";
-import { Filter } from "../components/models/price-table.models";
+import { Sort } from "../models/price-table.enums";
+import { Filter } from "../models/price-table.models";
 import { PriceDataMapping } from "../models/app.models";
 
 interface UseFilteredAndSortedItemsProps {

@@ -1,5 +1,6 @@
-import { PriceDataMapping } from "../models/app.models";
-import { tableHeaders } from "./constants/price-table.constants";
+
+import { PriceDataMapping } from "../../models/app.models";
+import { tableHeaders } from "../../constants/price-table.constants";
 import styles from "./PriceTable.module.css";
 
 interface PriceTableBodyProps {

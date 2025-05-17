@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { LoadingGrid } from "../UI/loading-grid/LoadingGrid";
-import { useFilteredAndSortedItems } from "../hooks/use-filtered-and-sorted-items";
-import { PriceDataMapping } from "../models/app.models";
-import { PriceTableBody } from "./PriceTableBody";
-import { PriceTableHead } from "./PriceTableHead";
-import { PriceTableHeader } from "./PriceTableHeader";
+import { LoadingGrid } from "../../UI/loading-grid/LoadingGrid";
+import { useFilteredAndSortedItems } from "../../hooks/use-filtered-and-sorted-items";
+import { PriceDataMapping } from "../../models/app.models";
+import { PriceTableHeader } from "./price-table-header/PriceTableHeader";
 import {
   initialFilterState,
   initialSortState,
   tableHeaders,
-} from "./constants/price-table.constants";
-import { Sort } from "./models/price-table.enums";
-import { Filter } from "./models/price-table.models";
+} from "../../constants/price-table.constants";
+import { Sort } from "../../models/price-table.enums";
+import { Filter } from "../../models/price-table.models";
+import { PriceTableBody } from "./PriceTableBody";
+import { PriceTableHead } from "./PriceTableHead";
 
 interface PriceTableProps {
   data: PriceDataMapping[];

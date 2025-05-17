@@ -1,5 +1,5 @@
-import { tableHeaders } from "./constants/price-table.constants";
-import { Sort } from "./models/price-table.enums";
+import { tableHeaders } from "../../constants/price-table.constants";
+import { Sort } from "../../models/price-table.enums";
 
 interface PriceTableHeadProps {
   sortItem: Record<string, Sort>;
