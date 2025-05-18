@@ -23,7 +23,7 @@ export const MinMarginInput = ({
   }, [value]);
 
   return (
-    <div className="input-group mb-3">
+    <div className="input-group mb-1">
       <span className="input-group-text">Minimal Margin</span>
       <input
         type="text"

@@ -23,8 +23,8 @@ export const MinVolumeInput = ({
   }, [value]);
 
   return (
-    <div className="input-group mb-3">
-      <span className="input-group-text">Minimal Volume</span>
+    <div className="input-group mb-1">
+      <span className="input-group-text">Min. Vol.</span>
       <input
         type="text"
         className="form-control"

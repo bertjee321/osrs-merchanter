@@ -20,7 +20,7 @@ export const ItemNameInput = ({ resetKey, onChanges }: ItemNameInputProps) => {
   }, [value]);
 
   return (
-    <div className="input-group mb-3">
+    <div className="input-group mb-1">
       <span className="input-group-text">Item Name</span>
       <input
         type="text"

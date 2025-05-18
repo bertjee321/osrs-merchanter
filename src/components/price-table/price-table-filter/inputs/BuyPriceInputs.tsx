@@ -37,7 +37,7 @@ export const BuyPriceInputs = ({
   }, [enteredMaxBuyPrice]);
 
   return (
-    <div className="input-group mb-3">
+    <div className="input-group mb-1">
       <span className="input-group-text">Buy price</span>
       <input
         type="text"
