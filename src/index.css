@@ -4,15 +4,6 @@ th:hover {
   text-decoration: underline;
 }
 
-.filter-span {
-  font-size: 15px;
-  text-decoration: underline;
-}
-.filter-span:hover {
-  cursor: pointer;
-  color: blue;
-}
-
 .refresh-icon {
   position: relative;
   display: inline-block;
@@ -44,8 +35,3 @@ th:hover {
 .font-size-small {
   font-size: 9px;
 }
-
-.width-50pc {
-  width: 50%;
-}
-

@@ -5,6 +5,7 @@ import { BuyPriceInputs } from "./inputs/BuyPriceInputs";
 import { ItemNameInput } from "./inputs/ItemNameInput";
 import { MinMarginInput } from "./inputs/MinMarginInput";
 import { MinVolumeInput } from "./inputs/MinVolumeInput";
+import styles from "./PriceTableFilter.module.css";
 
 interface PriceTableFilterProps {
   filterSubmitHandler: (data: {
@@ -27,6 +28,7 @@ const initialInputData = {
 export const PriceTableFilter = ({
   filterSubmitHandler,
 }: PriceTableFilterProps) => {
+  const [showFilter, setShowFilter] = React.useState<boolean>(false);
   const [resetKey, setResetKey] = React.useState(0);
   const [inputData, setInputData] = React.useState(initialInputData);
 
@@ -76,20 +78,52 @@ export const PriceTableFilter = ({
     }));
   };
 
+  const toggleFilter = () => {
+    setShowFilter((prevState) => !prevState);
+  };
+
+  const renderForm = () => {
+    return (
+      <form className="mb-2" onSubmit={submitHandler}>
+        <div className="row">
+          <div className="col-12 col-md-8">
+            <ItemNameInput
+              resetKey={resetKey}
+              onChanges={itemNameChangeHandler}
+            />
+            <BuyPriceInputs
+              resetKey={resetKey}
+              minPriceOnChanges={minBuyPriceChangeHandler}
+              maxPriceOnChanges={maxBuyPriceChangeHandler}
+            />
+          </div>
+          <div className="col-12 col-md-4">
+            <MinVolumeInput
+              resetKey={resetKey}
+              onChanges={minVolumeChangeHandler}
+            />
+            <MinMarginInput
+              resetKey={resetKey}
+              onChanges={minMarginChangeHandler}
+            />
+          </div>
+        </div>
+        <div className="d-flex justify-content-end gap-2">
+          <SubmitButton />
+          <ResetButton onClick={resetHandler} />
+        </div>
+      </form>
+    );
+  };
+
   return (
-    <form className="mb-2 width-50pc" onSubmit={submitHandler}>
-      <ItemNameInput resetKey={resetKey} onChanges={itemNameChangeHandler} />
-      <BuyPriceInputs
-        resetKey={resetKey}
-        minPriceOnChanges={minBuyPriceChangeHandler}
-        maxPriceOnChanges={maxBuyPriceChangeHandler}
-      />
-      <MinVolumeInput resetKey={resetKey} onChanges={minVolumeChangeHandler} />
-      <MinMarginInput resetKey={resetKey} onChanges={minMarginChangeHandler} />
-      <div className="d-grid text-start gap-2">
-        <SubmitButton />
-        <ResetButton onClickHandler={resetHandler} />
-      </div>
-    </form>
+    <>
+      <h2 className="text-start">
+        <div className={styles["filter-span"]} onClick={toggleFilter}>
+          {showFilter ? "Hide filter" : "Show filter"}
+        </div>
+      </h2>
+      {showFilter && renderForm()}
+    </>
   );
 };
