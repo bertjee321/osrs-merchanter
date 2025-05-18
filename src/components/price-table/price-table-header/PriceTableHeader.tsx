@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PriceTableFilter } from "./PriceTableFilter";
+import { PriceTableFilter } from "../price-table-filter/PriceTableFilter";
 
 export const PriceTableHeader = (props: { onSubmit: (data: any) => void }) => {
   const [showFilter, setShowFilter] = useState<boolean>(false);
@@ -12,13 +12,12 @@ export const PriceTableHeader = (props: { onSubmit: (data: any) => void }) => {
     <>
       <h1 className="text-center">OSRS Full Price Table</h1>
       <h2 className="text-start">
-        Filter{" "}
         <span
           style={{ fontSize: "15px" }}
           className="filter-span"
           onClick={toggleFilter}
         >
-          {showFilter ? "hide" : "show"}
+          {showFilter ? "Hide filter" : "Show filter"}
         </span>
       </h2>
 
