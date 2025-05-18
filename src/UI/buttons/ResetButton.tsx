@@ -1,11 +1,12 @@
-interface ResetButtonProps { 
-    onClickHandler: () => void;
+interface ResetButtonProps {
+  buttonText?: string;
+  onClick?: () => void;
 }
 
-export const ResetButton = ({onClickHandler}: ResetButtonProps ) => {
+export const ResetButton = ({ buttonText, onClick }: ResetButtonProps) => {
   return (
-    <button className="btn btn-secondary" onClick={onClickHandler}>
-      Reset <span className="bi bi-arrow-clockwise" />
+    <button className="btn btn-outline-secondary" onClick={onClick}>
+      {buttonText ?? ""} <span className="bi bi-arrow-clockwise" />
     </button>
   );
 };
