@@ -1,10 +1,10 @@
 import React from "react";
 import { ResetButton } from "../../../UI/buttons/ResetButton";
 import { SubmitButton } from "../../../UI/buttons/SubmitButton";
-import { BuyPriceInputs } from "./price-table-filter-inputs/BuyPriceInputs";
-import { ItemNameInput } from "./price-table-filter-inputs/ItemNameInput";
-import { MinMarginInput } from "./price-table-filter-inputs/MinMarginInput";
-import { MinVolumeInput } from "./price-table-filter-inputs/MinVolumeInput";
+import { BuyPriceInputs } from "./inputs/BuyPriceInputs";
+import { ItemNameInput } from "./inputs/ItemNameInput";
+import { MinMarginInput } from "./inputs/MinMarginInput";
+import { MinVolumeInput } from "./inputs/MinVolumeInput";
 
 interface PriceTableFilterProps {
   filterSubmitHandler: (data: {
