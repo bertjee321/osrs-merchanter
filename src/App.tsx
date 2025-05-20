@@ -5,7 +5,7 @@ import { PriceTable } from "./components/price-table/PriceTable";
 import { PriceDataMapping } from "./models/app.models";
 import { combineMappingAndHourPricesList } from "./utils/utils";
 
-function App() {
+export const App = () => {
   const [fullList, setFullList] = useState<PriceDataMapping[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -42,5 +42,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

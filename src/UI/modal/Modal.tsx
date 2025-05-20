@@ -17,7 +17,7 @@ const ModalOverlay = (props: { children: JSX.Element }) => {
 
 const portalElement = document.getElementById("overlays") as HTMLElement;
 
-const Modal = (props: { onClose: () => void; children: JSX.Element }) => {
+export const Modal = (props: { onClose: () => void; children: JSX.Element }) => {
   return (
     <Fragment>
       {ReactDOM.createPortal(
@@ -31,5 +31,3 @@ const Modal = (props: { onClose: () => void; children: JSX.Element }) => {
     </Fragment>
   );
 };
-
-export default Modal;
