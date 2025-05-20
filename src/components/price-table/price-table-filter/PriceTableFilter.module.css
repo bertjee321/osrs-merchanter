@@ -1,8 +1,8 @@
-.filter-span {
+.price-table__filter-btn {
   font-size: 15px;
   text-decoration: underline;
 }
-.filter-span:hover {
+.price-table__filter-btn:hover {
   cursor: pointer;
   color: blue;
 }

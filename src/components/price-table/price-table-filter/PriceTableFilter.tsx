@@ -119,7 +119,7 @@ export const PriceTableFilter = ({
   return (
     <>
       <h2 className="text-start">
-        <div className={styles["filter-span"]} onClick={toggleFilter}>
+        <div className={styles["price-table__filter-btn"]} onClick={toggleFilter}>
           {showFilter ? "Hide filter" : "Show filter"}
         </div>
       </h2>
