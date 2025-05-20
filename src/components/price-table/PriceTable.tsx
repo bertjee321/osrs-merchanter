@@ -1,17 +1,18 @@
 import { useState } from "react";
+import { BackButton } from "../../UI/buttons/BackButton";
 import { LoadingGrid } from "../../UI/loading-grid/LoadingGrid";
-import { useFilteredAndSortedItems } from "../../hooks/use-filtered-and-sorted-items";
-import { PriceDataMapping } from "../../models/app.models";
-import { PriceTableHeader } from "./price-table-header/PriceTableHeader";
 import {
   initialFilterState,
   initialSortState,
   tableHeaders,
 } from "../../constants/price-table.constants";
+import { useFilteredAndSortedItems } from "../../hooks/use-filtered-and-sorted-items";
+import { PriceDataMapping } from "../../models/app.models";
 import { Sort } from "../../models/price-table.enums";
 import { Filter } from "../../models/price-table.models";
 import { PriceTableBody } from "./PriceTableBody";
 import { PriceTableHead } from "./PriceTableHead";
+import { PriceTableHeader } from "./price-table-header/PriceTableHeader";
 
 interface PriceTableProps {
   data: PriceDataMapping[];
@@ -60,15 +61,15 @@ export const PriceTable = (props: PriceTableProps) => {
 
   // Handler for rendering loading state
   const renderLoading = () => (
-    <>
+    <div className="text-center">
       <LoadingGrid />
       <h4>Fetching data ...</h4>
-    </>
+    </div>
   );
 
   // Handler for rendering error message
   const renderError = () => (
-    <div className="alert alert-danger" role="alert">
+    <div className="alert alert-danger text-center" role="alert">
       Something went wrong!
       <br />
     </div>
@@ -84,6 +85,7 @@ export const PriceTable = (props: PriceTableProps) => {
 
   return (
     <>
+      <BackButton />
       <PriceTableHeader onSubmit={submitHandler} />
       {props.loading
         ? renderLoading()
