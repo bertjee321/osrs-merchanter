@@ -1,0 +1,1 @@
+// E.g. members/f2p, tradable, weight, item class, update date.    

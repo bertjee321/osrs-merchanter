@@ -1,0 +1,1 @@
+// Show cost prices of nature runes (average, low, high)
