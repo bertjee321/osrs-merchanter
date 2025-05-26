@@ -8,11 +8,12 @@ import {
 } from "../../constants/price-table.constants";
 import { useFilteredAndSortedItems } from "../../hooks/use-filtered-and-sorted-items";
 import { PriceDataMapping } from "../../models/app.models";
-import { Sort } from "../../models/price-table.enums";
+import { Sort } from "../../enums/price-table.enums";
 import { Filter } from "../../models/price-table.models";
 import { PriceTableBody } from "./PriceTableBody";
 import { PriceTableHead } from "./PriceTableHead";
 import { PriceTableHeader } from "./price-table-header/PriceTableHeader";
+import { useNavigate } from "react-router-dom";
 
 interface PriceTableProps {
   data: PriceDataMapping[];
@@ -24,6 +25,7 @@ export const PriceTable = (props: PriceTableProps) => {
   const [sortItem, setSortItem] =
     useState<Record<string, Sort>>(initialSortState);
   const [filter, setFilter] = useState<Filter>(initialFilterState);
+  const navigate = useNavigate();
 
   const itemList = useFilteredAndSortedItems({
     data: props.data,
@@ -53,10 +55,7 @@ export const PriceTable = (props: PriceTableProps) => {
 
   // Handler for navigating to the OSRS wiki page of the clicked item
   const navigateHandler = (id: number) => {
-    window.open(
-      `https://prices.runescape.wiki/osrs/item/${id.toString()}`,
-      "_blank"
-    );
+    navigate(`/items/${id}`);
   };
 
   // Handler for rendering loading state
