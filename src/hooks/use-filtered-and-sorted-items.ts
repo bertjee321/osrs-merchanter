@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Sort } from "../models/price-table.enums";
+import { Sort } from "../enums/price-table.enums";
 import { Filter } from "../models/price-table.models";
 import { PriceDataMapping } from "../models/app.models";
 
