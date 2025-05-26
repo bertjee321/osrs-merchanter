@@ -1,4 +1,4 @@
-import { Sort } from "../models/price-table.enums";
+import { Sort } from "../enums/price-table.enums";
 import { Filter } from "../models/price-table.models";
 
 // Define the table headers with their corresponding keys
