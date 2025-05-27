@@ -1,13 +1,13 @@
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { fetchHourPrices } from "./api/hour-prices.api";
 import { fetchItemMapping } from "./api/item-mapping.api";
 import { ItemDetails } from "./components/item-details/ItemDetails";
 import { Layout } from "./components/layout/Layout";
 import { PriceTable } from "./components/price-table/PriceTable";
+import { FullItemsDetailsContext } from "./contexts/FullItemDetailsContext";
 import { PriceDataMapping } from "./models/app.models";
 import { combineMappingAndHourPricesList } from "./utils/utils";
-import { ItemMappingContext } from "./contexts/ItemMappingContext";
 
 const App = () => {
   const [itemMapping, setItemMapping] = useState<PriceDataMapping[]>([]);
@@ -43,7 +43,7 @@ const App = () => {
   }, []);
 
   return (
-    <ItemMappingContext.Provider value={itemMapping}>
+    <FullItemsDetailsContext.Provider value={fullList}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
@@ -68,13 +68,7 @@ const App = () => {
           </Route>
         </Routes>
       </BrowserRouter>
-    </ItemMappingContext.Provider>
-  );
-
-  return (
-    <div className="container text-center">
-      <PriceTable data={fullList} loading={isLoading} error={isError} />
-    </div>
+    </FullItemsDetailsContext.Provider>
   );
 };
 
