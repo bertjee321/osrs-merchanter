@@ -10,7 +10,6 @@ import { PriceDataMapping } from "./models/app.models";
 import { combineMappingAndHourPricesList } from "./utils/utils";
 
 const App = () => {
-  const [itemMapping, setItemMapping] = useState<PriceDataMapping[]>([]);
   const [fullList, setFullList] = useState<PriceDataMapping[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -33,7 +32,6 @@ const App = () => {
         hourPricesData
       );
 
-      setItemMapping(mappingData);
       setFullList(combinedList);
       setIsLoading(false);
       setIsError(false);
