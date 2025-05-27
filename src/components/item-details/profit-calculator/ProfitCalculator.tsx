@@ -1,53 +1,106 @@
-// For flipping: let users fil in item amount and show:
-// - Total profit
-// - GE-tax deduction
-// - Expected turnover / margin
+import { useState } from "react";
+import {
+  Card,
+  Col,
+  Form,
+  Row,
+  ToggleButton,
+  ToggleButtonGroup,
+} from "react-bootstrap";
 
-import React from "react";
-
-// For skill-items later also reusable (e.g. herblore mixing potions)
-export const ProfitCalculator = () => {
-  const [itemAmount, setItemAmount] = React.useState<number>(0);
-  const [profitPerItem, setProfitPerItem] = React.useState<number>(0);
-  const [totalProfit, setTotalProfit] = React.useState<number>(0);
-  const [geTaxDeduction, setGeTaxDeduction] = React.useState<number>(0);
-  const [expectedTurnover, setExpectedTurnover] = React.useState<number>(0);
-
-  const handleItemAmountChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = Number(event.target.value);
-    setItemAmount(value);
-    calculateProfit(value);
+interface ProfitCalculatorProps {
+  prices: {
+    snapshot: {
+      buy: number;
+      sell: number;
+    };
+    average: {
+      buy: number;
+      sell: number;
+    };
   };
+}
 
-  const calculateProfit = (amount: number) => {
-    const totalProfitValue = profitPerItem * amount;
-    setTotalProfit(totalProfitValue);
-    setGeTaxDeduction(totalProfitValue * 0.01); // Assuming GE tax is 1%
-    setExpectedTurnover(totalProfitValue - geTaxDeduction);
-  };
+export const ProfitCalculator = ({ prices }: ProfitCalculatorProps) => {
+  const [quantity, setQuantity] = useState(1);
+  const [mode, setMode] = useState<"snapshot" | "average">("average");
+
+  const buy = prices[mode].buy;
+  const sell = prices[mode].sell;
+  const taxes =
+    Math.floor(sell * 0.01) > 5_000_000 ? 5_000_000 : Math.floor(sell * 0.01); // GE tax is 1% of the sell price
+  const profitPerItem = sell - taxes - buy;
+  const totalProfit = profitPerItem * quantity;
+
+  const formatGp = (value: number) => `${value.toLocaleString()} gp`;
 
   return (
-    <div className="mb-4">
-      <div className="card-body">
-        <h5 className="card-title">Profit Calculator</h5>
-        <div className="mb-3">
-          <label htmlFor="itemAmount" className="form-label">
-            Item Amount
-          </label>
-          <input
+    // <Card className="mb-4 shadow-sm">
+    <Card.Body>
+      <Card.Title>📈 Profit Calculator</Card.Title>
+
+      <Row className="mb-3 align-items-end">
+        <Col xs={6} md={4}>
+          <Form.Label>Amount</Form.Label>
+          <Form.Control
             type="number"
-            className="form-control"
-            id="itemAmount"
-            value={itemAmount}
-            onChange={handleItemAmountChange}
+            min={1}
+            value={quantity}
+            onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
           />
-        </div>
-        <p>Total Profit: {totalProfit}</p>
-        <p>GE Tax Deduction: {geTaxDeduction}</p>
-        <p>Expected Turnover: {expectedTurnover}</p>
-      </div>
-    </div>
+        </Col>
+
+        <Col xs={6} md={4}>
+          <Form.Label>Price Mode</Form.Label>
+          <ToggleButtonGroup
+            type="radio"
+            name="priceMode"
+            value={mode}
+            onChange={(val) => setMode(val)}
+          >
+            <ToggleButton
+              id="tbg-radio-1"
+              value="average"
+              size="sm"
+              variant="outline-primary"
+            >
+              1h Avg
+            </ToggleButton>
+            <ToggleButton
+              id="tbg-radio-2"
+              value="snapshot"
+              size="sm"
+              variant="outline-secondary"
+            >
+              Latest
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Col>
+      </Row>
+
+      <hr />
+
+      <Row>
+        <Col md={6}>
+          <div>
+            🛒 Buy: <strong>{formatGp(buy)}</strong>
+          </div>
+          <div>
+            💰 Sell: <strong>{formatGp(sell)}</strong>
+          </div>
+        </Col>
+        <Col md={6}>
+          <div>
+            📦 {`${profitPerItem > 0 ? "Profit" : "Loss"}`} per item:{" "}
+            <strong className={`text-${profitPerItem > 0 ? "success" : "danger"}`}>{formatGp(profitPerItem)}</strong>
+          </div>
+          <div>
+            💵 Total {`${totalProfit > 0 ? "Profit" : "Loss"}`}:{" "}
+            <strong className={`text-${totalProfit > 0 ? "success" : "danger"}`}>{formatGp(totalProfit)}</strong>
+          </div>
+        </Col>
+      </Row>
+    </Card.Body>
+    // </Card>
   );
 };
