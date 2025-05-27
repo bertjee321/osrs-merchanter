@@ -34,15 +34,10 @@ export interface Mapping {
 export interface PriceDataMapping extends Mapping, Omit<TradeDataList, "id"> {}
 
 export interface ItemPriceData {
-  data: Record<
-    string,
-    {
-      high: number;
-      highTime: number;
-      low: number;
-      lowTime: number;
-    }
-  >;
+  high: number;
+  highTime: number;
+  low: number;
+  lowTime: number;
 }
 
 export interface ItemTimeStampPrice extends PriceData {

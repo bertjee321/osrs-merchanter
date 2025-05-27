@@ -5,9 +5,9 @@ import axiosInstance from "./axios";
 export const fetchItemLatestPrice = async (
   id: string
 ): Promise<ItemPriceData> => {
-  const response = await axiosInstance.get<ItemPriceData>(`/latest?id=${id}`);
+  const response = await axiosInstance.get<{data: Record<string, ItemPriceData>}>(`/latest?id=${id}`);
 
-  return response.data;
+  return response.data.data[id];
 };
 
 export const fetchItemTimeSeries = async (
