@@ -31,7 +31,7 @@ export const PriceTableHead = ({
           >
             {tableHeader}
             {key === "margin" && (
-              <span className="font-size-small"> (-1% tax)</span>
+              <span className="font-size-small"> (-2% tax)</span>
             )}{" "}
             {sortIcon(key as keyof typeof tableHeaders)}
           </th>

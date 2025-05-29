@@ -7,6 +7,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "react-bootstrap";
+import { GE_TAX } from "../../../app.constants";
 
 interface ProfitCalculatorProps {
   prices: {
@@ -28,7 +29,7 @@ export const ProfitCalculator = ({ prices }: ProfitCalculatorProps) => {
   const buy = prices[mode].buy;
   const sell = prices[mode].sell;
   const taxes =
-    Math.floor(sell * 0.01) > 5_000_000 ? 5_000_000 : Math.floor(sell * 0.01); // GE tax is 1% of the sell price
+    Math.floor(sell * GE_TAX) > 5_000_000 ? 5_000_000 : Math.floor(sell * GE_TAX);
   const profitPerItem = sell - taxes - buy;
   const totalProfit = profitPerItem * quantity;
 

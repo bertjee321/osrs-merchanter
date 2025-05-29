@@ -1,0 +1,1 @@
+export const GE_TAX = 0.02; // 2% Grand Exchange tax

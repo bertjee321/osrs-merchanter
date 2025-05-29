@@ -1,3 +1,4 @@
+import { GE_TAX } from "../app.constants";
 import {
   HourlyPriceEntry,
   Mapping,
@@ -60,7 +61,8 @@ const createCombinedData = (
 };
 
 const calculateMargin = (sellPrice: number, buyPrice: number) => {
-  const margin = sellPrice * 0.99 - buyPrice;
+  const taxes = sellPrice * GE_TAX;
+  const margin = sellPrice - buyPrice - taxes;
   return Math.floor(margin);
 };
 

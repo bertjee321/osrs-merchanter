@@ -1,3 +1,4 @@
+import { GE_TAX } from "../../../app.constants";
 import { PriceDataMapping } from "../../../models/app.models";
 
 interface PricesOverviewProps {
@@ -22,10 +23,10 @@ export const PricesOverview = ({
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
-  const latestPriceTax = Math.floor(latestTradeData.high * 0.01);
+  const latestPriceTax = Math.floor(latestTradeData.high * GE_TAX);
   const latestPriceProfit =
     latestTradeData.high - latestTradeData.low - latestPriceTax;
-  const hourPriceTax = Math.floor(itemDetails?.avgHighPrice * 0.01);
+  const hourPriceTax = Math.floor(itemDetails?.avgHighPrice * GE_TAX);
   const hourPriceProfit =
     itemDetails?.avgHighPrice - itemDetails?.avgLowPrice - hourPriceTax;
 
