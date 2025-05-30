@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { BackButton } from "../../UI/buttons/BackButton";
 import { LoadingGrid } from "../../UI/loading-grid/LoadingGrid";
 import {
@@ -6,14 +7,14 @@ import {
   initialSortState,
   tableHeaders,
 } from "../../constants/price-table.constants";
+import { Sort } from "../../enums/price-table.enums";
 import { useFilteredAndSortedItems } from "../../hooks/use-filtered-and-sorted-items";
 import { PriceDataMapping } from "../../models/app.models";
-import { Sort } from "../../enums/price-table.enums";
 import { Filter } from "../../models/price-table.models";
 import { PriceTableBody } from "./PriceTableBody";
 import { PriceTableHead } from "./PriceTableHead";
 import { PriceTableHeader } from "./price-table-header/PriceTableHeader";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 
 interface PriceTableProps {
   data: PriceDataMapping[];
@@ -22,17 +23,34 @@ interface PriceTableProps {
 }
 
 export const PriceTable = (props: PriceTableProps) => {
+  const navigate = useNavigate();
+  const parseParam = (val: string | null) =>
+    val === null || val.trim() === "" ? undefined : Number(val);
+
+  const getFilterFromSearchParams = (params: URLSearchParams): Filter => ({
+    name: params.get("itemName") || "",
+    minBuyPrice: parseParam(params.get("minPrice")),
+    maxBuyPrice: parseParam(params.get("maxPrice")),
+    minVolume: parseParam(params.get("minVolume")),
+    minMargin: parseParam(params.get("minMargin")),
+  });
+
+  const [searchParams] = useSearchParams();
+  const [filter, setFilter] = useState<Filter>(() =>
+    getFilterFromSearchParams(searchParams)
+  );
+
+  React.useEffect(() => {
+    setFilter(getFilterFromSearchParams(searchParams));
+  }, [searchParams]);
+
   const [sortItem, setSortItem] =
     useState<Record<string, Sort>>(initialSortState);
-  const [filter, setFilter] = useState<Filter>(initialFilterState);
-  const navigate = useNavigate();
-
   const itemList = useFilteredAndSortedItems({
     data: props.data,
     filter,
     sort: sortItem,
   });
-
   // Handler for sorting items based on the clicked header
   const sortHandler = (itemKey: keyof typeof tableHeaders) => {
     setSortItem((prevState) => {
@@ -47,10 +65,6 @@ export const PriceTable = (props: PriceTableProps) => {
 
       return updatedState;
     });
-  };
-
-  const submitHandler = (data: any) => {
-    setFilter(data);
   };
 
   // Handler for navigating to the OSRS wiki page of the clicked item
@@ -85,7 +99,7 @@ export const PriceTable = (props: PriceTableProps) => {
   return (
     <>
       <BackButton />
-      <PriceTableHeader onSubmit={submitHandler} />
+      <PriceTableHeader />
       {props.loading
         ? renderLoading()
         : props.error

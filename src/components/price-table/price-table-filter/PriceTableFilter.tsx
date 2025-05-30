@@ -1,129 +1,103 @@
 import React from "react";
-import { ResetButton } from "../../../UI/buttons/ResetButton";
+import { Button, Card, Form } from "react-bootstrap";
+import { useSearchParams } from "react-router-dom";
 import { SubmitButton } from "../../../UI/buttons/SubmitButton";
-import { BuyPriceInputs } from "./inputs/BuyPriceInputs";
-import { ItemNameInput } from "./inputs/ItemNameInput";
-import { MinMarginInput } from "./inputs/MinMarginInput";
-import { MinVolumeInput } from "./inputs/MinVolumeInput";
-import styles from "./PriceTableFilter.module.css";
 
-interface PriceTableFilterProps {
-  filterSubmitHandler: (data: {
-    name: string;
-    minBuyPrice: string;
-    maxBuyPrice: string;
-    minVolume: string;
-    minMargin: string;
-  }) => void;
-}
+export const PriceTableFilter = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [filters, setFilters] = React.useState({
+    itemName: searchParams.get("itemName") || "",
+    minPrice: searchParams.get("minPrice") || "",
+    maxPrice: searchParams.get("maxPrice") || "",
+    minVolume: searchParams.get("minVolume") || "",
+    minMargin: searchParams.get("minMargin") || "",
+  });
 
-const initialInputData = {
-  name: "",
-  minBuyPrice: "",
-  maxBuyPrice: "",
-  minVolume: "",
-  minMargin: "",
-};
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
 
-export const PriceTableFilter = ({
-  filterSubmitHandler,
-}: PriceTableFilterProps) => {
-  const [showFilter, setShowFilter] = React.useState<boolean>(false);
-  const [resetKey, setResetKey] = React.useState(0);
-  const [inputData, setInputData] = React.useState(initialInputData);
-
-  const submitHandler = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    filterSubmitHandler(inputData);
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) params.set(key, value);
+    });
+    setSearchParams(params);
   };
 
-  const resetHandler = () => {
-    setResetKey((prevKey) => prevKey + 1);
-    setInputData(initialInputData);
-  };
-
-  const itemNameChangeHandler = (value: string) => {
-    setInputData((prevData) => ({
-      ...prevData,
-      name: value,
-    }));
-  };
-
-  const minBuyPriceChangeHandler = (value: string) => {
-    setInputData((prevData) => ({
-      ...prevData,
-      minBuyPrice: value,
-    }));
-  };
-
-  const maxBuyPriceChangeHandler = (value: string) => {
-    setInputData((prevData) => ({
-      ...prevData,
-      maxBuyPrice: value,
-    }));
-  };
-
-  const minVolumeChangeHandler = (value: string) => {
-    setInputData((prevData) => ({
-      ...prevData,
-      minVolume: value,
-    }));
-  };
-
-  const minMarginChangeHandler = (value: string) => {
-    setInputData((prevData) => ({
-      ...prevData,
-      minMargin: value,
-    }));
-  };
-
-  const toggleFilter = () => {
-    setShowFilter((prevState) => !prevState);
-  };
-
-  const renderForm = () => {
-    return (
-      <form className="mb-2" onSubmit={submitHandler}>
-        <div className="row">
-          <div className="col-12 col-md-8">
-            <ItemNameInput
-              resetKey={resetKey}
-              onChanges={itemNameChangeHandler}
-            />
-            <BuyPriceInputs
-              resetKey={resetKey}
-              minPriceOnChanges={minBuyPriceChangeHandler}
-              maxPriceOnChanges={maxBuyPriceChangeHandler}
-            />
-          </div>
-          <div className="col-12 col-md-4">
-            <MinVolumeInput
-              resetKey={resetKey}
-              onChanges={minVolumeChangeHandler}
-            />
-            <MinMarginInput
-              resetKey={resetKey}
-              onChanges={minMarginChangeHandler}
-            />
-          </div>
-        </div>
-        <div className="d-flex justify-content-end gap-2">
-          <SubmitButton />
-          <ResetButton onClick={resetHandler} />
-        </div>
-      </form>
-    );
+  const handleReset = () => {
+    setFilters({
+      itemName: "",
+      minPrice: "",
+      maxPrice: "",
+      minVolume: "",
+      minMargin: "",
+    });
+    setSearchParams({});
   };
 
   return (
-    <>
-      <h2 className="text-start">
-        <div className={styles["price-table__filter-btn"]} onClick={toggleFilter}>
-          {showFilter ? "Hide filter" : "Show filter"}
+    <Card className="mb-4 shadow-sm p-3">
+      <Form onSubmit={handleSubmit} className="d-flex flex-column">
+        <div className="mb-3">
+          <Form.Label className="fw-semibold fs-5">🔍 Item Name</Form.Label>
+          <Form.Control
+            type="text"
+            name="itemName"
+            value={filters.itemName}
+            onChange={handleChange}
+          />
         </div>
-      </h2>
-      {showFilter && renderForm()}
-    </>
+        <div className="row g-3">
+          <div className="col-md-4">
+            <Form.Label className="small text-muted">Min. price</Form.Label>
+            <Form.Control
+              type="number"
+              name="minPrice"
+              value={filters.minPrice}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="col-md-4">
+            <Form.Label className="small text-muted">Max. price</Form.Label>
+            <Form.Control
+              type="number"
+              name="maxPrice"
+              value={filters.maxPrice}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="col-md-4">
+            <Form.Label className="small text-muted">Min. volume</Form.Label>
+            <Form.Control
+              type="number"
+              name="minVolume"
+              value={filters.minVolume}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="mt-3 row g-3">
+          <div className="col-md-4">
+            <Form.Label className="small text-muted">Min. margin</Form.Label>
+            <Form.Control
+              type="number"
+              name="minMargin"
+              value={filters.minMargin}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="col-md-8 d-flex align-items-end justify-content-end gap-2">
+            <SubmitButton />
+            <Button variant="outline-secondary" onClick={handleReset}>
+              Reset
+            </Button>
+          </div>
+        </div>
+      </Form>
+    </Card>
   );
 };
