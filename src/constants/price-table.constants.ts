@@ -23,10 +23,7 @@ export const initialFilterState: Filter = {
   minMargin: undefined,
 };
 
-// Set initial sort state per table header, items should not be sorted at first (set to Sort.None)
-export const initialSortState: Record<string, Sort> = Object.keys(
-  tableHeaders
-).reduce((acc, key) => {
-  acc[key] = Sort.None;
-  return acc;
-}, {} as Record<string, Sort>);
+export const initialSortState = {
+  key: "name" as keyof typeof tableHeaders,
+  direction: Sort.Descending
+}

@@ -1,5 +1,4 @@
 export enum Sort {
-  Ascending = "ascending",
-  Descending = "descending",
-  None = "none",
+  Ascending = "asc",
+  Descending = "desc",
 }
