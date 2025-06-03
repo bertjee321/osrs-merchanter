@@ -1,6 +1,10 @@
 import { useNavigate } from "react-router-dom";
 
-export const BackButton = () => {
+interface BackButtonProps {
+  additionalClass?: string;
+}
+
+export const BackButton = ({ additionalClass }: BackButtonProps) => {
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -8,7 +12,10 @@ export const BackButton = () => {
   };
 
   return (
-    <button className="btn btn-secondary" onClick={handleBack}>
+    <button
+      className={`btn btn-secondary ${additionalClass}`}
+      onClick={handleBack}
+    >
       {"<"} Back
     </button>
   );

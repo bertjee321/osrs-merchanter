@@ -32,3 +32,14 @@ export interface Mapping {
 
 // Combines Mapping metadata with price data (without redundant `id`)
 export interface PriceDataMapping extends Mapping, Omit<TradeDataList, "id"> {}
+
+export interface ItemPriceData {
+  high: number;
+  highTime: number;
+  low: number;
+  lowTime: number;
+}
+
+export interface ItemTimeStampPrice extends PriceData {
+  timestamp: string;
+}

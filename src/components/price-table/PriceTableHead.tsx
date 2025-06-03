@@ -1,8 +1,9 @@
 import { tableHeaders } from "../../constants/price-table.constants";
-import { Sort } from "../../models/price-table.enums";
+import { Sort } from "../../enums/price-table.enums";
+import { SortState } from "../../models/sort-state.models";
 
 interface PriceTableHeadProps {
-  sortItem: Record<string, Sort>;
+  sortItem: SortState;
   sortHandler: (itemKey: keyof typeof tableHeaders) => void;
 }
 
@@ -12,12 +13,18 @@ export const PriceTableHead = ({
 }: PriceTableHeadProps) => {
   // Helper function to determine the sort icon based on the sort state
   const sortIcon = (key: keyof typeof tableHeaders) => {
-    if (sortItem[key] === Sort.Descending) {
-      return <span className="bi bi-sort-down" />;
-    } else if (sortItem[key] === Sort.Ascending) {
-      return <span className="bi bi-sort-down-alt" />;
-    } else {
+    if (key !== sortItem.key) {
       return <span className="bi bi-arrow-down-up" />;
+    }
+
+    if (!sortItem.direction) {
+      return <span className="bi bi-arrow-down-up" />;
+    }
+
+    if (sortItem.direction === Sort.Ascending) {
+      return <span className="bi bi-sort-down-alt" />;
+    } else if (sortItem.direction === Sort.Descending) {
+      return <span className="bi bi-sort-down" />;
     }
   };
 
@@ -31,7 +38,7 @@ export const PriceTableHead = ({
           >
             {tableHeader}
             {key === "margin" && (
-              <span className="font-size-small"> (-1% tax)</span>
+              <span className="font-size-small"> (-2% tax)</span>
             )}{" "}
             {sortIcon(key as keyof typeof tableHeaders)}
           </th>

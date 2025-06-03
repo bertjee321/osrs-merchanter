@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { fetchHourPrices } from "./api/hour-prices.api";
 import { fetchItemMapping } from "./api/item-mapping.api";
+import { ItemDetails } from "./components/item-details/ItemDetails";
+import { Layout } from "./components/layout/Layout";
 import { PriceTable } from "./components/price-table/PriceTable";
+import { FullItemsDetailsContext } from "./contexts/FullItemDetailsContext";
 import { PriceDataMapping } from "./models/app.models";
 import { combineMappingAndHourPricesList } from "./utils/utils";
-import { Layout } from "./components/layout/Layout";
 
 const App = () => {
   const [fullList, setFullList] = useState<PriceDataMapping[]>([]);
@@ -39,32 +41,32 @@ const App = () => {
   }, []);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Navigate to="/items" replace />} />
-          <Route
-            path="items"
-            element={
-              <PriceTable data={fullList} loading={isLoading} error={isError} />
-            }
-          />
-          {/* <Route path="items/:itemId" element={<ItemDetail />} /> */}
-          <Route
-            path="*"
-            element={
-              <div className="text-center mt-5">404 - Page not found</div>
-            }
-          />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  );
-
-  return (
-    <div className="container text-center">
-      <PriceTable data={fullList} loading={isLoading} error={isError} />
-    </div>
+    <FullItemsDetailsContext.Provider value={fullList}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Navigate to="/items" replace />} />
+            <Route
+              path="items"
+              element={
+                <PriceTable
+                  data={fullList}
+                  loading={isLoading}
+                  error={isError}
+                />
+              }
+            />
+            <Route path="items/:itemId" element={<ItemDetails />} />
+            <Route
+              path="*"
+              element={
+                <div className="text-center mt-5">404 - Page not found</div>
+              }
+            />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </FullItemsDetailsContext.Provider>
   );
 };
 

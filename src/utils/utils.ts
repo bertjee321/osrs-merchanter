@@ -1,8 +1,16 @@
+import { GE_TAX } from "../app.constants";
+import {
+  initialSortState,
+  tableHeaders,
+} from "../constants/price-table.constants";
+import { Sort } from "../enums/price-table.enums";
 import {
   HourlyPriceEntry,
   Mapping,
   PriceDataMapping,
 } from "../models/app.models";
+import { Filter } from "../models/price-table.models";
+import { SortState } from "../models/sort-state.models";
 
 export const isNullOrUndefined = (data: any): boolean => {
   return data === undefined || data === null;
@@ -60,7 +68,8 @@ const createCombinedData = (
 };
 
 const calculateMargin = (sellPrice: number, buyPrice: number) => {
-  const margin = sellPrice * 0.99 - buyPrice;
+  const taxes = sellPrice * GE_TAX;
+  const margin = sellPrice - buyPrice - taxes;
   return Math.floor(margin);
 };
 
@@ -91,4 +100,30 @@ const filterList = (data: PriceDataMapping[]): PriceDataMapping[] => {
       !isNullUndefinedEmptyStringOrZero(item.highPriceVolume) &&
       !isNullUndefinedEmptyStringOrZero(item.lowPriceVolume)
   );
+};
+
+const parseParam = (val: string | null) =>
+  val === null || val.trim() === "" ? undefined : Number(val);
+
+export const getFilterFromSearchParams = (params: URLSearchParams): Filter => ({
+  name: params.get("itemName") || "",
+  minBuyPrice: parseParam(params.get("minPrice")),
+  maxBuyPrice: parseParam(params.get("maxPrice")),
+  minVolume: parseParam(params.get("minVolume")),
+  minMargin: parseParam(params.get("minMargin")),
+});
+
+export const getSortFromSearchParams = (params: URLSearchParams): SortState => {
+  const sortParam = params.get("sort");
+
+  if (sortParam) {
+    const [key, value] = sortParam.split("-");
+
+    return {
+      key: key as keyof typeof tableHeaders,
+      direction: value === Sort.Ascending ? Sort.Ascending : Sort.Descending,
+    };
+  } else {
+    return initialSortState;
+  }
 };
