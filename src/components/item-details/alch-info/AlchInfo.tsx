@@ -35,7 +35,7 @@ export const AlchInfo = ({ itemDetails }: AlchInfoProps) => {
       </div>
 
       <div className="mb-2">
-        <strong>🛒 Item avg. price (1h):</strong> {formatGp(avgMarketPrice)}
+        <strong>🛒 Avg. price (1h):</strong> {formatGp(avgMarketPrice)}
       </div>
 
       <div className="mb-2">
@@ -60,7 +60,7 @@ export const AlchInfo = ({ itemDetails }: AlchInfoProps) => {
       <div
         className={`fw-bold ${profit >= 0 ? "text-success" : "text-danger"}`}
       >
-        💰 Verwachte winst per alch: {formatGp(profit)}
+        💰 Expected profit per alch: {formatGp(profit)}
       </div>
     </Card.Body>
   );
