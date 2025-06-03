@@ -21,10 +21,13 @@ export const PriceTableFilter = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(searchParams);
+
     Object.entries(filters).forEach(([key, value]) => {
       if (value) params.set(key, value);
+      else params.delete(key);
     });
+
     setSearchParams(params);
   };
 
