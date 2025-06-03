@@ -1,9 +1,8 @@
-import { useState } from "react";
+import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { BackButton } from "../../UI/buttons/BackButton";
 import { LoadingGrid } from "../../UI/loading-grid/LoadingGrid";
 import {
-  initialFilterState,
   initialSortState,
   tableHeaders,
 } from "../../constants/price-table.constants";
@@ -11,10 +10,14 @@ import { Sort } from "../../enums/price-table.enums";
 import { useFilteredAndSortedItems } from "../../hooks/use-filtered-and-sorted-items";
 import { PriceDataMapping } from "../../models/app.models";
 import { Filter } from "../../models/price-table.models";
+import { SortState } from "../../models/sort-state.models";
+import {
+  getFilterFromSearchParams,
+  getSortFromSearchParams,
+} from "../../utils/utils";
 import { PriceTableBody } from "./PriceTableBody";
 import { PriceTableHead } from "./PriceTableHead";
 import { PriceTableHeader } from "./price-table-header/PriceTableHeader";
-import React from "react";
 
 interface PriceTableProps {
   data: PriceDataMapping[];
@@ -24,50 +27,43 @@ interface PriceTableProps {
 
 export const PriceTable = (props: PriceTableProps) => {
   const navigate = useNavigate();
-  const parseParam = (val: string | null) =>
-    val === null || val.trim() === "" ? undefined : Number(val);
-
-  const getFilterFromSearchParams = (params: URLSearchParams): Filter => ({
-    name: params.get("itemName") || "",
-    minBuyPrice: parseParam(params.get("minPrice")),
-    maxBuyPrice: parseParam(params.get("maxPrice")),
-    minVolume: parseParam(params.get("minVolume")),
-    minMargin: parseParam(params.get("minMargin")),
-  });
-
-  const [searchParams] = useSearchParams();
-  const [filter, setFilter] = useState<Filter>(() =>
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [filter, setFilter] = React.useState<Filter>(() =>
     getFilterFromSearchParams(searchParams)
   );
+  const [sortState, setSortState] = React.useState<SortState>(initialSortState);
 
   React.useEffect(() => {
     setFilter(getFilterFromSearchParams(searchParams));
+    setSortState(getSortFromSearchParams(searchParams));
   }, [searchParams]);
 
-  const [sortItem, setSortItem] =
-    useState<Record<string, Sort>>(initialSortState);
   const itemList = useFilteredAndSortedItems({
     data: props.data,
     filter,
-    sort: sortItem,
+    sort: sortState,
   });
-  // Handler for sorting items based on the clicked header
+
   const sortHandler = (itemKey: keyof typeof tableHeaders) => {
-    setSortItem((prevState) => {
-      // Reset all sort properties to Sort.None
-      const updatedState: Record<string, Sort> = { ...initialSortState };
+    const currentSort = getSortFromSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams);
 
-      // Set the sort property for the clicked item to the opposite value
-      updatedState[itemKey] =
-        prevState[itemKey] === Sort.Descending
-          ? Sort.Ascending
-          : Sort.Descending;
+    if (currentSort.key === itemKey) {
+      params.set(
+        "sort",
+        `${itemKey}-${
+          currentSort.direction === Sort.Ascending
+            ? Sort.Descending
+            : Sort.Ascending
+        }`
+      );
+    } else {
+      params.set("sort", `${itemKey}-${Sort.Descending}`);
+    }
 
-      return updatedState;
-    });
+    setSearchParams(params);
   };
 
-  // Handler for navigating to the OSRS wiki page of the clicked item
   const navigateHandler = (id: number) => {
     navigate(`/items/${id}`);
   };
@@ -91,7 +87,7 @@ export const PriceTable = (props: PriceTableProps) => {
   // Handler for rendering the table with item data
   const renderTable = () => (
     <table className="table table-striped table-bordered table-hover text-center">
-      <PriceTableHead sortItem={sortItem} sortHandler={sortHandler} />
+      <PriceTableHead sortItem={sortState} sortHandler={sortHandler} />
       <PriceTableBody itemList={itemList} navigateHandler={navigateHandler} />
     </table>
   );
